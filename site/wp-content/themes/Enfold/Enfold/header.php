@@ -85,7 +85,7 @@ wp_head();
 	
 	?>
 	<?php if(!$blank) {?>
-		<style>.logo.bg-logo {position:relative !important;}.logo.bg-logo a{display: flex;align-items: center;justify-content: center;}.logo.bg-logo a img {margin-left:5px;}</style>
+		<style>.avia-menu-text {color:white;font-family:sans-serif;}.logo {position:relative !important;}.logo a{display: flex;align-items: center;justify-content: center;}.logo a img {margin-left:5px;height: 55px;width:115px;}</style>
 		<div class="container_wrap" style="background:#97be0e;">
     		<div class="container" style="height: 150px;display: flex;padding-right: 0;max-width: 4000px;">
 		 		<div style="width: 5%;height: 150px;"></div>
