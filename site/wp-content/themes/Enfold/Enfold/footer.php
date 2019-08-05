@@ -26,7 +26,7 @@
 				<div class='container_wrap footer_color' id='footer'>
 
 					<div class='container'>
-
+					<style>#custom_html-2 {left: 181px;}#media_image-2 {left: 147px;}.container a{color:#675e5e;}#custom_html-3 {left: 68px;}#media_image-4{left:64px;}#media_image-5{left:126px;bottom:75px;}#media_image-6{left: 204px;bottom: 150px;}#media_image-7{bottom: 171px;left: 45px;}#media_image-9{bottom: 77px;left: 54px;}</style>
 						<?php
 						do_action('avia_before_footer_columns');
 
