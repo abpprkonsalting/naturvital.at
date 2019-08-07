@@ -5,6 +5,7 @@ if(!defined('LS_ROOT_FILE')) {
 	exit;
 }
 
+$lsContainer = array();
 // Full-width slider
 if(isset($slides['properties']['props']['forceresponsive'])) {
 	$lsContainer[] = '<div class="ls-wp-fullwidth-container" style="height:'.layerslider_check_unit($slides['properties']['props']['height']).';">';
@@ -12,6 +13,7 @@ if(isset($slides['properties']['props']['forceresponsive'])) {
 }
 
 // Get slider style
+$sliderStyleAttr = array();
 $sliderStyleAttr[] = 'width:'.layerslider_check_unit($slides['properties']['props']['width']).';';
 $sliderStyleAttr[] = 'height:'.layerslider_check_unit($slides['properties']['props']['height']).';';
 
@@ -89,6 +91,7 @@ if(!empty($slider['slides']) && is_array($slider['slides'])) {
 
 		// Start of slide
 		$slideAttrs = !empty($slideAttrs) ? 'data-ls="'.$slideAttrs.'"' : '';
+		$lsMarkup = array();
 		$lsMarkup[] = '<div class="ls-slide"'.$slideId.' '.$slideAttrs.'>';
 
 		// Add slide background
