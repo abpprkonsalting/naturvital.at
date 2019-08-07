@@ -33,6 +33,11 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button {
   border-color: transparent;
 }
 
+body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia-button {
+  background:#017635;
+  color:white;
+}
+
 /************ Second Section ***********/
 
 body.home #av_section_1 .entry-content .content-slider-slide {
