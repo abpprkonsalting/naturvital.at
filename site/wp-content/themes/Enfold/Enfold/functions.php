@@ -562,3 +562,12 @@ require_once( 'functions-enfold.php');
  * add option to edit elements via css class
  */
 // add_theme_support('avia_template_builder_custom_css');
+
+
+
+if (!function_exists('abp_init_script')) {    
+	function abp_init_script() {
+		wp_enqueue_script('abp_init_script',plugins_url('abp_init_script.js'), array('jquery'),NULL);
+	}
+	add_action('wp_enqueue_scripts', 'abp_init_script', 500);
+ }
