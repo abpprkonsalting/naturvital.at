@@ -12,6 +12,10 @@
 
 /*********************  Home Page ********************************************/
 
+body.home .avia-button {
+  border-radius:30px;
+}
+
 /**************** Slider **************/
 body.home #layer_slider_1 {
   border:none;
