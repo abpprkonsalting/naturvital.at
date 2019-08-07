@@ -40,7 +40,27 @@ body.home #av_section_1 .entry-content .content-slider-slide {
     justify-content: center;
 }
 
+body.home #av_section_1 .avia-smallarrow-slider-heading {
+  position: absolute;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
 
+body.home #av_section_1 .new-special-heading {
+  display:none;
+}
+
+body.home #av_section_1 .avia-smallarrow-slider .avia-slideshow-arrows {
+  width:100%;
+}
+
+body.home #av_section_1  .avia-slideshow-arrows a:before {
+  background: transparent;
+    color: green;
+    font-size: 40px;
+    font-weight: 900;
+}
 
 
 /*
