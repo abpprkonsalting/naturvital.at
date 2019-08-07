@@ -21,6 +21,20 @@ body.home #layer_slider_1 {
   border:none;
 }
 
+/************ First Section ***********/
+
+body.home #av-layout-grid-1 .flex_cell_inner{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+body.home #av-layout-grid-1 .flex_cell_inner .avia-button {
+  background: transparent;
+  border-color: transparent;
+}
+
+
+
 
 /*
 Desktop Styles
