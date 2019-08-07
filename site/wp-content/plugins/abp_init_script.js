@@ -48,7 +48,72 @@
                         // en white.
                         jQuery(this).css('background','#017635');
                         jQuery(this).css('color','white');
+
+                        
+                        var slides = jQuery("#av_section_1 .slide-entry-wrap ");
+                        slides.removeClass("active-slide");
+
+                        slides.css("visibility","hidden");
+
+
+                        var myText = jQuery(this).text();
+                        var miSlide = slides.filter( function(index,slide) {
+                            var i =jQuery(slide).find(".content-slider-slide")
+                            var identifier = i.attr('id').split("-");
+                            if (identifier.length > 0 && identifier[1] == myText) return true;
+                            else return false;
+                        });
+                        miSlide.addClass("active-slide");
+                        miSlide.css("visibility","visible");
+                        miSlide.css("transform","translate3d(0px, 0px, 0px)");
+
                     });
+                });
+
+                var next_slider_button = jQuery("#av_section_1  .avia-slideshow-arrows a.next-slide");
+                next_slider_button.each( function(index,elem) {
+
+                    jQuery(elem).click(function(){
+                        var activeSlide = jQuery("#av_section_1 .slide-entry-wrap.active-slide .content-slider-slide");
+                        var activeSlideMarker = activeSlide.attr('id').split("-")[1];
+                        var buttons = jQuery("#av-layout-grid-1 .flex_cell_inner .avia-button");
+                        var activeButton = buttons.filter( function(index, button){
+                            var text = jQuery(button).find('span').text();
+                            return text == activeSlideMarker;
+                        });
+                        activeButton.css('background','transparent');
+                        activeButton.css('color','#017635');
+                        var index = buttons.index(activeButton);
+                        var next = 0;
+                        if (index < buttons.length - 1) next = index + 1;
+                        var nextButton = jQuery(buttons[next]);
+                        nextButton.css('background','#017635');
+                        nextButton.css('color','white');
+                    })
+                    
+                });
+
+                var prev_slider_button = jQuery("#av_section_1  .avia-slideshow-arrows a.prev-slide");
+                prev_slider_button.each( function(index,elem) {
+
+                    jQuery(elem).click(function(){
+                        var activeSlide = jQuery("#av_section_1 .slide-entry-wrap.active-slide .content-slider-slide");
+                        var activeSlideMarker = activeSlide.attr('id').split("-")[1];
+                        var buttons = jQuery("#av-layout-grid-1 .flex_cell_inner .avia-button");
+                        var activeButton = buttons.filter( function(index, button){
+                            var text = jQuery(button).find('span').text();
+                            return text == activeSlideMarker;
+                        });
+                        activeButton.css('background','transparent');
+                        activeButton.css('color','#017635');
+                        var index = buttons.index(activeButton);
+                        var prev = buttons.length - 1;
+                        if (index > 0) prev = index - 1;
+                        var prevButton = jQuery(buttons[prev]);
+                        prevButton.css('background','#017635');
+                        prevButton.css('color','white');
+                    })
+                    
                 });
             }
         }
