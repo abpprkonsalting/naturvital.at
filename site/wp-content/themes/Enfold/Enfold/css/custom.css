@@ -9,11 +9,16 @@
   padding-top: 0px !important;
 
 }
+/*********************Header*********************************/
+#avia-menu.menu.av-main-nav  li .avia-bullet{
+  display: none;
+}
 
 /*********************  Home Page ********************************************/
 
 body.home .avia-button {
   border-radius:30px;
+  background: #77bc16;
 }
 
 /**************** Slider **************/
@@ -34,7 +39,7 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button {
 }
 
 body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia-button {
-  background:#017635;
+  background:#007635;
   color:white;
 }
 
@@ -62,7 +67,7 @@ body.home #av_section_1 .avia-smallarrow-slider .avia-slideshow-arrows {
 
 body.home #av_section_1  .avia-slideshow-arrows a:before {
   background: transparent;
-    color: green;
+    color: #007635;
     font-size: 40px;
     font-weight: 900;
 }
