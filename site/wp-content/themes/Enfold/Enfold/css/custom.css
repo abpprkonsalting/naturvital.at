@@ -20,6 +20,8 @@ body.home .avia-button {
   border-radius:30px;
   background: #77bc16;
 }
+  
+  
 
 /**************** Slider **************/
 body.home #layer_slider_1 {
@@ -72,6 +74,18 @@ body.home #av_section_1  .avia-slideshow-arrows a:before {
     font-weight: 900;
 }
 
+/************ Section Three ***********/
+body.home .avia_textblock .textlm1 {
+  color: grey !important;
+}
+
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 7px;
+}
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 51px;
+}
+
 
 /*
 Desktop Styles
@@ -80,6 +94,7 @@ Desktop Styles
 
 @media only screen and (min-width: 768px) {
   /* Add your Desktop Styles here */
+
 
 }
 
@@ -93,4 +108,62 @@ Mobile Styles
 @media only screen and (max-width: 767px) {
   /* Add your Mobile Styles here */
 
+  /*header*/
+
+.logo{
+  margin-left: 9px;
+}
+
+/*--------Section three----------*/
+
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
+}
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
+}
+
+/*---------Footer----------*/
+
+.textwidget.custom-html-widget li a{
+
+  font-size: small;
+
+}
+.flex_column.av_one_third.first.el_before_av_one_third #custom_html-2{
+  left: 33%;
+}
+.flex_column.av_one_third.first.el_before_av_one_third #media_image-2{
+  left: 25%;
+}
+.flex_column.av_one_third.first.el_before_av_one_third #custom_html-3{
+  left: 40%;
+}
+.flex_column.av_one_third.el_after_av_one_third.el_before_av_one_third {
+  height: 285px;
+}
+/*-----------Second section----------*/
+
+#slideimage1{
+  height: 200px !important;
+}
+.slidetext1{
+  font-size: 16px !important;
+}
+.slidetext2 {
+  display: none;
+  font-size: 1px !important;
+}
+.avia-smallarrow-slider-heading.no-content-slider-heading {
+display: none;
+}
+#av_section_1 {
+height: 350px;
+
+}
+.flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
+  display: none !important;
+}  
+  
+ 
 }
