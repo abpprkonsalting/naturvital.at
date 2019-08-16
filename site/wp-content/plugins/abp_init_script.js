@@ -14,6 +14,18 @@
             // En el caso de home es la clase "home", en otras páginas es el número del post donde esa página se
             // guardó en la DB (ejemplo: "page-id-646").
 
+            var headerContainer = jQuery("#search-placeholder");
+                headerContainer.append("<form action=\"/\" id=\"searchform\" method=\"get\" class=\"\" style=\"margin-right: 30%;\">" + 
+                "<div><input style=\"background: transparent;line-height: 28px;color: gray;\" type=\"submit\" value=\"\ue803\" id=\"searchsubmit\" class=\"button avia-font-entypo-fontello\">" +
+                "<input style=\"min-width: 250px;padding: 5px;\" type=\"text\" id=\"s\" name=\"s\" value=\"\" placeholder=\"Search\"></div></form>");
+
+            var secondMenuSection = jQuery("#second-menu-placeholder");
+            var secondMenu = jQuery("#second-menu-placeholder .avia-menu.av-main-nav-wrap");
+            var wholeWrap = jQuery("#container_wrap");
+            secondMenuSection.remove();
+            wholeWrap.append(secondMenu);
+
+
             if ( jQuery('body').hasClass("home")) {
 
                 // En el arreglo buttons pongo los botones de la sección 1.

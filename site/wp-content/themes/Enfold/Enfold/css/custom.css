@@ -5,32 +5,106 @@
   padding-top: 0px;
 
 }
+
 #main {
   padding-top: 0px !important;
 
 }
+
 /*********************Header*********************************/
-#avia-menu.menu.av-main-nav  li .avia-bullet{
+#avia-menu.menu.av-main-nav li .avia-bullet {
   display: none;
+}
+
+#header {
+  position: absolute !important;
+  left: 0;
+  top: 0;
+}
+
+#header_main {
+  border: none;
+  background: transparent;
+}
+
+#header_main .container {
+  padding: 0;
+  height: 0 !important;
+  width: 100%;
+}
+
+#header_main .container .logo {
+  display: none;
+}
+
+#header_main .container .main_menu {
+  width: 100%;
+}
+
+#header_main .container .main_menu li a {
+  background: transparent;
+  display: flex;
+  align-items: center;
+}
+
+#menu-item-search {
+  display: none;
+}
+
+#menu-item-131 {
+  background: #ee7801;
+}
+
+#container_wrap>.avia-menu.av-main-nav-wrap {
+  display: none;
+  background: #97be0e;
+  justify-content: center;
+  width: 100%;
+  height:45px;
+}
+
+#container_wrap>.avia-menu.av-main-nav-wrap > ul{
+display: flex;
+    align-items: center;
+}
+
+#advanced_menu_toggle, #advanced_menu_hide {
+  height: 40px;
+  width: 40px;
+  line-height: 40px;
+  margin-top: 2px;
+  right: 0;
+}
+
+#mobile-advanced .avia-menu-text {
+  color: #97be0e;
+}
+
+.logo {
+  float: none !important;
+}
+
+.logo a img {
+  margin: 0 !important;
 }
 
 /*********************  Home Page ********************************************/
 
 body.home .avia-button {
-  border-radius:30px;
+  border-radius: 30px;
   background: #77bc16;
 }
-  
-  
+
+
 
 /**************** Slider **************/
 body.home #layer_slider_1 {
-  border:none;
+  border: none;
 }
 
 /************ First Section ***********/
 
-body.home #av-layout-grid-1 .flex_cell_inner{
+body.home #av-layout-grid-1 .flex_cell_inner {
   display: flex;
   justify-content: space-evenly;
 }
@@ -41,37 +115,53 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button {
 }
 
 body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia-button {
-  background:#007635;
-  color:white;
+  background: #007635;
+  color: white;
 }
 
 /************ Second Section ***********/
 
 body.home #av_section_1 .entry-content .content-slider-slide {
   display: flex;
-    justify-content: center;
+  justify-content: center;
+  align-items: center;
 }
+
+body.home #av_section_1 .entry-content .content-slider-slide>div {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+body.home #av_section_1 .entry-content .content-slider-slide>div.second-col {
+  flex-direction: column;
+}
+
+body.home #av_section_1 .entry-content .content-slider-slide .slidetext2 {
+  max-width: 80%
+}
+
 
 body.home #av_section_1 .avia-smallarrow-slider-heading {
   position: absolute;
-    display: flex;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
 
 body.home #av_section_1 .new-special-heading {
-  display:none;
+  display: none;
 }
 
 body.home #av_section_1 .avia-smallarrow-slider .avia-slideshow-arrows {
-  width:100%;
+  width: 100%;
 }
 
-body.home #av_section_1  .avia-slideshow-arrows a:before {
+body.home #av_section_1 .avia-slideshow-arrows a:before {
   background: transparent;
-    color: #007635;
-    font-size: 40px;
-    font-weight: 900;
+  color: #007635;
+  font-size: 40px;
+  font-weight: 900;
 }
 
 /************ Section Three ***********/
@@ -82,6 +172,7 @@ body.home .avia_textblock .textlm1 {
 body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
   margin-top: 7px;
 }
+
 body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
   margin-top: 51px;
 }
@@ -105,65 +196,138 @@ Mobile Styles
 ================================================== */
 /* Note: Add new css to the media query below that you want to only effect the Mobile and Tablet Portrait view */
 
+@media only screen and (max-width: 1090px) {
+
+  .padding-five {
+    display: none !important;
+  }
+  .padding-five ~ div{
+    width: 100% !important;
+  }
+}
+
+
+@media only screen and (max-width: 1150px) {
+  .container_wrap .container {
+    padding-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
+@media only screen and (min-width: 1070px) and (max-width: 1090px) {
+
+  #search-placeholder {
+    width: 120%;
+  }
+
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1069px) {
+
+  #container_wrap>.avia-menu.av-main-nav-wrap {
+    display: flex;
+  }
+
+  #container_wrap .main_menu .avia-menu {
+    display: none;
+  }
+
+}
+
 @media only screen and (max-width: 767px) {
   /* Add your Mobile Styles here */
 
   /*header*/
 
-.logo{
-  margin-left: 9px;
-}
+  #container_wrap>.avia-menu.av-main-nav-wrap {
+    display: none;
+  }
 
-/*--------Section three----------*/
+  #searchform {
+    margin-right: 20% !important;
+  }
 
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 0px;
-}
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 0px;
-}
+  .logo {
+    margin-left: 9px;
+  }
 
-/*---------Footer----------*/
+  /*--------Section three----------*/
 
-.textwidget.custom-html-widget li a{
+  body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
+    margin-top: 0px;
+  }
 
-  font-size: small;
+  body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
+    margin-top: 0px;
+  }
 
-}
-.flex_column.av_one_third.first.el_before_av_one_third #custom_html-2{
-  left: 33%;
-}
-.flex_column.av_one_third.first.el_before_av_one_third #media_image-2{
-  left: 25%;
-}
-.flex_column.av_one_third.first.el_before_av_one_third #custom_html-3{
-  left: 40%;
-}
-.flex_column.av_one_third.el_after_av_one_third.el_before_av_one_third {
-  height: 285px;
-}
-/*-----------Second section----------*/
+  /*-----------Second section----------*/
 
-#slideimage1{
+  /*#slideimage1{
   height: 200px !important;
-}
-.slidetext1{
-  font-size: 16px !important;
-}
-.slidetext2 {
+}*/
+  .slidetext1 {
+    font-size: 16px !important;
+  }
+
+  /*.slidetext2 {
   display: none;
   font-size: 1px !important;
-}
-.avia-smallarrow-slider-heading.no-content-slider-heading {
-display: none;
-}
-#av_section_1 {
+}*/
+  .avia-smallarrow-slider-heading.no-content-slider-heading {
+    display: none;
+  }
+
+  body.home #av_section_1 .entry-content .content-slider-slide {
+    flex-direction: column;
+  }
+
+  /*#av_section_1 {
 height: 350px;
 
-}
-.flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
-  display: none !important;
-}  
-  
- 
+}*/
+  .flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
+    display: none !important;
+  }
+
+  /**************************** Third Section *****************************/
+
+
+  #after_section_1 .flex_column.av_one_third {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+  /**************************** Footer *****************************/
+
+  .textwidget.custom-html-widget li a {
+
+    font-size: small;
+
+  }
+
+  #footer .flex_column.av_one_third {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #footer .flex_column.av_one_third:last-child {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  #footer #custom_html-2,
+  #media_image-2,
+  #custom_html-3,
+  #media_image-4,
+  #media_image-5,
+  #media_image-6,
+  #media_image-7,
+  #media_image-9 {
+    left: 0 !important;
+    bottom: unset !important;
+  }
 }
