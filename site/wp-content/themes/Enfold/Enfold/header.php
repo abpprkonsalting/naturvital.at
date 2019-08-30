@@ -44,6 +44,7 @@ if( strpos($responsive, 'responsive') !== false ) echo '<meta name="viewport" co
 wp_head();
 
 ?>
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed&display=swap" rel="stylesheet">
 
 </head>
 
@@ -64,26 +65,26 @@ wp_head();
 	<div id='wrap_all'>
 	
 	<?php if(!$blank) {?>
-		<style>.avia-menu-text {color:white;font-family:sans-serif;}.logo {position:relative !important;}.logo a{display: flex;align-items: center;justify-content: center;}.logo a img {margin-left:5px;height: 55px;width:115px;}</style>
-		<div id="container_wrap" class="container_wrap" style="background:#97be0e;">
-    		<div class="container" style="height: 150px;display: flex;padding-right: 0;max-width: 4000px;">
+		<style>.avia-menu-text {color:white;font-family:'Roboto Condensed', sans-serif;;}.logo {position:relative !important;}.logo a{display: flex;align-items: center;justify-content: center;}.logo a img {margin-left:5px;height: 200px;width:500px;}</style>
+		<div id="container_wrap" class="container_wrap" style="background:#618d33;">
+    		<div class="container" style="height: 150px;display: flex;padding-right: 0;max-width: 6000px;">
 		 		<div class="padding-five" style="width: 5%;height: 150px;"></div>
 				<div style="width: 95%;height: 150px;display: flex;">
-					<div style="width: 150px;height: 150px;padding: 10px;">
-						<div style="height: 95%;background: white;border: 1px solid white;border-radius: 200px;">
+					<div style="width: 283px;height: 170px;padding: 10px;">
+						<div style="height: 95%;background:#618d33;border: 0px solid white;border-radius: 200px;">
 							<?php echo avia_logo(AVIA_BASE_URL.'images/layout/logo.png', $addition, 'strong', true); ?> 
 						</div>
 					</div>
 					<div style="flex: 1;display:flex;flex-direction:column;height: 150px;">
 						<div style="height: 45%;"></div>
-						<div id="search-placeholder" style="height: 25%;margin-left: -50px;;background: white;display: flex;justify-content: flex-end;align-items: center;"></div>
+						<div id="search-placeholder" style="height: 25%;margin-left: -130px;;background: white;display: flex;justify-content: flex-end;align-items: center;"></div>
 						<div style="height: 30%;display: flex;align-items: center;justify-content: flex-end;padding-right: 100px;position: relative;">
 							<?php get_template_part( 'includes/helper', 'main-menu' ); ?>
 						</div>
 					</div>
 				</div>
 			 </div>
-			<div id="second-menu-placeholder">
+			<div id="second-menu-placeholder" >				
 				<?php get_template_part( 'includes/helper', 'main-menu' ); ?>
 			</div>
 		</div>

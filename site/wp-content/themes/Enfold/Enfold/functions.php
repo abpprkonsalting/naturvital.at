@@ -121,6 +121,7 @@ if(!function_exists('avia_theme_update_filter'))
 
 
 
+
 ##################################################################
 # AVIA FRAMEWORK by Kriesi
 
@@ -571,3 +572,6 @@ if (!function_exists('abp_init_script')) {
 	}
 	add_action('wp_enqueue_scripts', 'abp_init_script', 500);
  }
+
+ 
+

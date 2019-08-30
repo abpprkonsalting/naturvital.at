@@ -1,6 +1,10 @@
 /* Have fun adding your style here :) - PS: At all times this file should contain a comment or a rule, otherwise opera might act buggy :( */
 
 /* General Custom CSS */
+body {
+  font-family: 'Roboto Condensed', sans-serif !important;
+}
+
 .all_colors {
   padding-top: 0px;
 
@@ -20,11 +24,13 @@
   position: absolute !important;
   left: 0;
   top: 0;
+  font-family: 'Roboto Condensed', sans-serif !important;
 }
 
 #header_main {
   border: none;
   background: transparent;
+  font-family: 'Roboto Condensed', sans-serif !important;
 }
 
 #header_main .container {
@@ -52,12 +58,12 @@
 }
 
 #menu-item-131 {
-  background: #ee7801;
+  background:  #618d33;
 }
 
 #container_wrap>.avia-menu.av-main-nav-wrap {
   display: none;
-  background: #97be0e;
+  background: #618d33;
   justify-content: center;
   width: 100%;
   height:45px;
@@ -77,7 +83,7 @@ display: flex;
 }
 
 #mobile-advanced .avia-menu-text {
-  color: #97be0e;
+  color: #618d33;
 }
 
 .logo {
@@ -87,12 +93,17 @@ display: flex;
 .logo a img {
   margin: 0 !important;
 }
+#second-menu-placeholder{
+  background: #618d33 !important;
+  font-family: 'Roboto Condensed', sans-serif;
+
+}
 
 /*********************  Home Page ********************************************/
 
 body.home .avia-button {
   border-radius: 30px;
-  background: #77bc16;
+  background: #618d33;
 }
 
 
@@ -115,9 +126,10 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button {
 }
 
 body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia-button {
-  background: #007635;
+  background: #618d33;
   color: white;
 }
+
 
 /************ Second Section ***********/
 
@@ -159,7 +171,7 @@ body.home #av_section_1 .avia-smallarrow-slider .avia-slideshow-arrows {
 
 body.home #av_section_1 .avia-slideshow-arrows a:before {
   background: transparent;
-  color: #007635;
+  color:#618d33;
   font-size: 40px;
   font-weight: 900;
 }
@@ -207,11 +219,18 @@ Mobile Styles
 }
 
 
-@media only screen and (max-width: 1150px) {
+@media only screen and (max-width: 1220px) {
   .container_wrap .container {
     padding-left: 0 !important;
     width: 100% !important;
   }
+  #container_wrap>.avia-menu.av-main-nav-wrap {
+    display: flex;
+  }
+  #container_wrap .main_menu .avia-menu {
+    display: none;
+  }
+
 }
 
 @media only screen and (min-width: 1070px) and (max-width: 1090px) {
@@ -219,10 +238,17 @@ Mobile Styles
   #search-placeholder {
     width: 120%;
   }
+  #container_wrap>.avia-menu.av-main-nav-wrap {
+    display: flex;
+  }
+  #container_wrap .main_menu .avia-menu {
+    display: none;
+  }
+
 
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1069px) {
+@media only screen and (min-width: 826px) and (max-width: 1069px) {
 
   #container_wrap>.avia-menu.av-main-nav-wrap {
     display: flex;
@@ -234,7 +260,7 @@ Mobile Styles
 
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 825px) {
   /* Add your Mobile Styles here */
 
   /*header*/
