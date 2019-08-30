@@ -8,6 +8,26 @@ if(is_single()) $blog_style = avia_get_option('single_post_style','single-big');
 
 $blog_global_style = avia_get_option('blog_global_style',''); //alt: elegant-blog
 
+$blog_disabled = ( avia_get_option('disable_blog') == 'disable_blog' ) ? true : false;
+if($blog_disabled)
+{
+	if (current_user_can('edit_posts'))
+	{
+		$msg = 	'<strong>'.__('Admin notice for:' )."</strong><br>".
+						__('Blog Posts', 'avia_framework' )."<br><br>".
+						__('This element was disabled in your theme settings. You can activate it here:' )."<br>".
+					   '<a target="_blank" href="'.admin_url('admin.php?page=avia#goto_performance').'">'.__("Performance Settings",'avia_framework' )."</a>";
+		
+		$content 	= "<span class='av-shortcode-disabled-notice'>{$msg}</span>";
+		
+		echo $content;
+	}
+	
+	 return;
+}
+
+
+
 
 $initial_id = avia_get_the_ID();
 
@@ -33,7 +53,7 @@ if (have_posts()) :
 	$blog_content = !empty($avia_config['blog_content']) ? $avia_config['blog_content'] : "content";
 	
 	/*If post uses builder change content to exerpt on overview pages*/
-    if(AviaHelper::builder_status($current_post['the_id']) && !is_singular($current_post['the_id']) && $current_post['post_type'] == 'post')
+    if( Avia_Builder()->get_alb_builder_status( $current_post['the_id'] ) && !is_singular($current_post['the_id']) && $current_post['post_type'] == 'post')
     {
 	   $current_post['post_format'] = 'standard';
 	   $blog_content = "excerpt_read_more";
@@ -52,8 +72,8 @@ if (have_posts()) :
 	
 	
 	$current_post['title']   	= get_the_title();
-	$current_post['content'] 	= $blog_content == "content" ? get_the_content(__('Read more','avia_framework').'<span class="more-link-arrow">  &rarr;</span>') : get_the_excerpt();
-	$current_post['content'] 	= $blog_content == "excerpt_read_more" ? $current_post['content'].'<div class="read-more-link"><a href="'.get_permalink().'" class="more-link">'.__('Read more','avia_framework').'<span class="more-link-arrow">  &rarr;</span></a></div>' : $current_post['content'];
+	$current_post['content'] 	= $blog_content == "content" ? get_the_content(__('Read more','avia_framework').'<span class="more-link-arrow"></span>') : get_the_excerpt();
+	$current_post['content'] 	= $blog_content == "excerpt_read_more" ? $current_post['content'].'<div class="read-more-link"><a href="'.get_permalink().'" class="more-link">'.__('Read more','avia_framework').'<span class="more-link-arrow"></span></a></div>' : $current_post['content'];
 	$current_post['before_content'] = "";
 
 	/*
@@ -102,19 +122,18 @@ if (have_posts()) :
             $link = avia_image_by_id(get_post_thumbnail_id(), 'large', 'url');
         }
 
+        if ( !in_array( $blog_style, array('bloglist-simple', 'bloglist-compact', 'bloglist-excerpt') ) ) {
+            //echo preview image
+            if (strpos($blog_global_style, 'elegant-blog') === false) {
+                if (strpos($blog_style, 'big') !== false) {
+                    if ($slider) $slider = '<a href="' . $link . '" title="' . $featured_img_desc . '">' . $slider . '</a>';
+                    if ($slider) echo '<div class="big-preview ' . $blog_style . '">' . $slider . '</div>';
+                }
 
-        //echo preview image
-        if($blog_global_style !== 'elegant-blog')
-        {
-		    if(strpos($blog_style, 'big') !== false)
-		    {
-		        if($slider) $slider = '<a href="'.$link.'" title="'.$featured_img_desc.'">'.$slider.'</a>';
-		        if($slider) echo '<div class="big-preview '.$blog_style.'">'.$slider.'</div>';
-		    }
-			
-		    if(!empty($before_content))
-		        echo '<div class="big-preview '.$blog_style.'">'.$before_content.'</div>';
-		}
+                if (!empty($before_content))
+                    echo '<div class="big-preview ' . $blog_style . '">' . $before_content . '</div>';
+            }
+        }
 		
         echo "<div class='blog-meta'>";
 
@@ -148,6 +167,13 @@ if (have_posts()) :
 
         echo "<div class='entry-content-wrapper clearfix {$post_format}-content'>";
             echo '<header class="entry-content-header">';
+
+                if ($blog_style == 'bloglist-compact') {
+                    $format = get_post_format();
+                    echo "<span class=' fallback-post-type-icon' ".av_icon_string($format)."></span>";
+                }
+
+            	$close_header 	= "</header>"; 
             	
             	$content_output  =  '<div class="entry-content" '.avia_markup_helper(array('context' => 'entry_content','echo'=>false)).'>';
 				$content_output .=  $content;
@@ -173,32 +199,57 @@ if (have_posts()) :
             	
             	
             	//elegant blog
-            	if( $blog_global_style == 'elegant-blog' )
+            	//prev: if( $blog_global_style == 'elegant-blog' )
+            	if( strpos($blog_global_style, 'elegant-blog') !== false )
             	{
+	            	$cat_output = "";
+	            	
 	            	if(!empty($cats))
                     {
-                        echo '<span class="blog-categories minor-meta">';
-                        echo $cats;
-                        echo '</span>';
+                        $cat_output .= '<span class="blog-categories minor-meta">';
+                        $cat_output .= $cats;
+                        $cat_output .= '</span>';
                         $cats = "";
                     }
-            
-					echo $title;
-					
-					echo '<span class="av-vertical-delimiter"></span>';
-					
-					//echo preview image
-				    if(strpos($blog_style, 'big') !== false)
-				    {
-				        if($slider) $slider = '<a href="'.$link.'" title="'.$featured_img_desc.'">'.$slider.'</a>';
-				        if($slider) echo '<div class="big-preview '.$blog_style.'">'.$slider.'</div>';
-				    }
-					
-				    if(!empty($before_content))
-				        echo '<div class="big-preview '.$blog_style.'">'.$before_content.'</div>';
-					
-					
-					echo $content_output;
+
+                if ( in_array( $blog_style, array('bloglist-compact','bloglist-excerpt') ) ) {
+                 echo $title;
+                }
+                else {
+
+                    // The wrapper div prevents the Safari reader from displaying the content twice  ¯\_(ツ)_/¯
+                    echo '<div class="av-heading-wrapper">';
+                    if (strpos($blog_global_style, 'modern-blog') === false){
+                        echo $cat_output.$title;
+                    }
+                    else {
+                        echo $title.$cat_output;
+                    }
+                    echo '</div>';
+                }
+
+
+                    echo $close_header;
+					$close_header = "";
+
+
+                   if ( !in_array( $blog_style, array('bloglist-simple', 'bloglist-compact', 'bloglist-excerpt') ) ) {
+
+                       echo '<span class="av-vertical-delimiter"></span>';
+
+                       //echo preview image
+                       if (strpos($blog_style, 'big') !== false) {
+                           if ($slider) $slider = '<a href="' . $link . '" title="' . $featured_img_desc . '">' . $slider . '</a>';
+                           if ($slider) echo '<div class="big-preview ' . $blog_style . '">' . $slider . '</div>';
+                       }
+
+
+                       if (!empty($before_content))
+                           echo '<div class="big-preview ' . $blog_style . '">' . $before_content . '</div>';
+
+
+                       echo $content_output;
+                   }
 					
 					$cats = "";
 					$title = "";
@@ -209,47 +260,65 @@ if (have_posts()) :
 				
 				
 				echo $title;
+
+                if ($blog_style !== 'bloglist-compact') :
 				
-                echo "<span class='post-meta-infos'>";
-                
-                echo "<time class='date-container minor-meta updated' >".get_the_time(get_option('date_format'))."</time>";
-                echo "<span class='text-sep text-sep-date'>/</span>";
+                    echo "<span class='post-meta-infos'>";
+
+                    echo "<time class='date-container minor-meta updated' >".get_the_time(get_option('date_format'))."</time>";
+                    echo "<span class='text-sep text-sep-date'>/</span>";
 
 
 
-                    if ( get_comments_number() != "0" || comments_open() ){
+                        if ( get_comments_number() != "0" || comments_open() ){
 
-                    echo "<span class='comment-container minor-meta'>";
-                    comments_popup_link(  "0 ".__('Comments','avia_framework'),
-                                          "1 ".__('Comment' ,'avia_framework'),
-                                          "% ".__('Comments','avia_framework'),'comments-link',
-                                          "".__('Comments Disabled','avia_framework'));
-                    echo "</span>";
-                    echo "<span class='text-sep text-sep-comment'>/</span>";
-                    }
-
-
-                    if(!empty($cats))
-                    {
-                        echo '<span class="blog-categories minor-meta">'.__('in','avia_framework')." ";
-                        echo $cats;
-                        echo '</span><span class="text-sep text-sep-cat">/</span>';
-                    }
+                        echo "<span class='comment-container minor-meta'>";
+                        comments_popup_link(  "0 ".__('Comments','avia_framework'),
+                                              "1 ".__('Comment' ,'avia_framework'),
+                                              "% ".__('Comments','avia_framework'),'comments-link',
+                                              "".__('Comments Disabled','avia_framework'));
+                        echo "</span>";
+                        echo "<span class='text-sep text-sep-comment'>/</span>";
+                        }
 
 
-                    echo '<span class="blog-author minor-meta">'.__('by','avia_framework')." ";
-                    echo '<span class="entry-author-link" >';
-                    echo '<span class="vcard author"><span class="fn">';
-                    the_author_posts_link();
-                    echo '</span></span>';
+                        if(!empty($cats))
+                        {
+                            echo '<span class="blog-categories minor-meta">'.__('in','avia_framework')." ";
+                            echo $cats;
+                            echo '</span><span class="text-sep text-sep-cat">/</span>';
+                        }
+
+
+                        echo '<span class="blog-author minor-meta">'.__('by','avia_framework')." ";
+                        echo '<span class="entry-author-link" >';
+                        echo '<span class="vcard author"><span class="fn">';
+                        the_author_posts_link();
+                        echo '</span></span>';
+                        echo '</span>';
+                        echo '</span>';
+
+                        if ($blog_style == 'bloglist-simple') {
+                            echo '<div class="read-more-link"><a href="'.get_permalink().'" class="more-link">'.__('Read more','avia_framework').'<span class="more-link-arrow"></span></a></div>';
+                        }
+
                     echo '</span>';
-                    echo '</span>';
-                echo '</span>';
-            echo '</header>';
+
+                endif; // display meta-infos on all layouts except bloglist-compact
+
+            echo $close_header;
 
 
             // echo the post content
-            echo $content_output;
+            if ( $blog_style == 'bloglist-excerpt'){
+                the_excerpt();
+                echo '<div class="read-more-link"><a href="'.get_permalink().'" class="more-link">'.__('Read more','avia_framework').'<span class="more-link-arrow"></span></a></div>';
+            }
+
+            if ( !in_array( $blog_style, array('bloglist-simple', 'bloglist-compact', 'bloglist-excerpt') ) ) {
+                echo $content_output;
+            }
+
 
             echo '<footer class="entry-footer">';
 

@@ -125,7 +125,7 @@ if( ! class_exists( 'avia_form' ) )
 			$extraClass  = isset($params['form_class']) ? $params['form_class'] : "";
 			$redirect    = isset($params['redirect']) ? "data-avia-redirect='".$params['redirect']."'" : "";
 			
-			$form_class  = apply_filters('avf_ajax_form_class', 'ajax_form', $this->formID, $this->form_params);
+			$form_class  = apply_filters( 'avf_ajax_form_class', 'avia_ajax_form', $this->formID, $this->form_params );
 			$form_class .= $this->placeholder ? " av-form-labels-hidden " : " av-form-labels-visible ";
 			$form_data   = "";
 			
@@ -413,7 +413,7 @@ if( ! class_exists( 'avia_form' ) )
 			
 			$placeholder_text = 'DD / MM / YY';
 
-            if(!empty($element['check']))
+            if( ! empty($element['check'] ) )
             {
                 $required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
                 $element_class = $element['check'];
@@ -424,15 +424,22 @@ if( ! class_exists( 'avia_form' ) )
 			{
 				$value = esc_html(urldecode($_POST[$id]));
 			}
-			else if( !empty( $element['value'] ) )
+			else if( ! empty( $element['value'] ) )
 			{
 				$value = $element['value'];
 			}
 
-			if($this->placeholder)
+			if( $this->placeholder )
 			{
-				$placeholder_text = $element['label'];
-				$extra = "*";
+					//	empty label - keep default placeholder
+				if( ! empty( $element['label'] ) )
+				{
+					$placeholder_text = $element['label'];
+				}
+				if( ! empty( $element['check'] ) )
+				{
+					$extra = "*";
+				}
 			}
 
 			$placeholder = apply_filters('avf_datepicker_date_placeholder', $placeholder_text.$extra);
@@ -558,18 +565,19 @@ if( ! class_exists( 'avia_form' ) )
          *
          * The select method creates a dropdown element with type select, and prefills them with $_POST values if available.
          * The method also checks against various input validation cases
+		 * 
          * @param string $id holds the key of the element
          * @param array $element data array of the element that should be created
          */
-		function select($id, $element)
+		function select( $id, $element )
 		{
 
 			if(empty($element['options'])) return;
 
 			if(!is_array($element['options']))
 			{
-				$element['options'] = str_replace("\,", "&#44;", $element['options'] );
-				$element['options'] = explode(',',$element['options']);
+				$element['options'] = str_replace( array( "\,", ',,' ), "&#44;", $element['options'] );
+				$element['options'] = explode(',',$element['options'] );
 			}
 
 			$p_class = $required = $element_class = $prefilled_value = $select = $extra  = "";
@@ -852,7 +860,7 @@ if( ! class_exists( 'avia_form' ) )
 			$to = apply_filters("avf_form_sendto", $to, $new_post, $this->form_params);
 	
 			$from = urldecode( $from );
-			$from = apply_filters("avf_form_from", $from, $new_post, $this->form_params);
+			$from_filtered = apply_filters("avf_form_from", $from, $new_post, $this->form_params);
 
 			$subject = urldecode( $subject );
 			$subject = apply_filters("avf_form_subject", $subject, $new_post, $this->form_params);
@@ -881,10 +889,15 @@ if( ! class_exists( 'avia_form' ) )
 				{
 					if($element['type'] != 'hidden' && $element['type'] != 'decoy')
 					{
-						if($element['type'] == 'textarea') $message .= " <br/>";
+						$form_field = '';
+						if($element['type'] == 'textarea') $form_field .= " <br/>";
+						
 						$field_value = apply_filters( "avf_form_mail_field_values", nl2br(urldecode($new_post[$key])), $new_post, $this->form_elements, $this->form_params, $element, $key );
-						$message .= $element['label'].": ".$field_value." <br/>";
-						if($element['type'] == 'textarea') $message .= " <br/>";
+						
+						$form_field .= $element['label'].": ".$field_value." <br/>";
+						if($element['type'] == 'textarea') $form_field .= " <br/>";
+						
+						$message .= apply_filters( "avf_form_mail_form_field", $form_field, $new_post, $this->form_elements, $this->form_params, $element, $key, $field_value );
 					}
 				}
 			}
@@ -906,61 +919,81 @@ if( ! class_exists( 'avia_form' ) )
 				{
 					if(!defined('AV_TESTSERVER'))
 					{
-						$send_to_mail = get_admin_url();
+						$send_to_mail = get_option('admin_email');
 					}
 				}
 				
 				
 				if($use_wpmail)
 				{
-					$header .= 'From: '. $from . " <".$from."> \r\n";
+					$header .= 'From: '. $from_filtered . " <".$from_filtered."> \r\n";
 					wp_mail($send_to_mail, $subject, $message, $header);
 				}
 				else
 				{
-					$header .= 'From:'. $from . " \r\n";
+					$header .= 'From:'. $from_filtered . " \r\n";
 					mail($send_to_mail, $subject, $message, $header);
 				}
 			}
 
-			//autoresponder?
-			if($usermail && !empty($this->form_params['autoresponder']))
+			/**
+			 * Allow to add a custom autoresponder - must return complete HTML.
+			 * The returned string is packed in a div and only HTML structure of string is validated.
+			 * 
+			 * @since v4.0.6
+			 */
+			$custom_autoresponser = apply_filters( 'avf_form_custom_autoresponder', '', $message, $this, $new_post );
+			
+			if( $usermail && ( ! empty( $this->form_params['autoresponder'] ) || ! empty( $custom_autoresponser ) ) )
 			{
 				//$header  = 'MIME-Version: 1.0' . "\r\n";
 				$header = 'Content-type: text/html; charset=utf-8' . "\r\n";
 				$header = apply_filters("avf_form_mail_header", $header, $new_post, $this->form_params);
 
-
-				$message = nl2br($this->form_params['autoresponder'])."<br/><br/><br/><strong>".__('Your Message:','avia_framework')." </strong><br/><br/>".$message;
-				$message = apply_filters("avf_form_autorespondermessage", $message);
-
-				$from = apply_filters("avf_form_autoresponder_from", $from, $new_post, $this->form_params);
-
-
-				$this->form_params['autoresponder_email'] = array_filter(array_map('trim', explode($delimiter, $this->form_params['autoresponder_email'])));
-				
-				if(is_array($this->form_params['autoresponder_email']))
+				if( ! empty( $custom_autoresponser ) )
 				{
-					$this->form_params['autoresponder_email'] = $this->form_params['autoresponder_email'][0];
-				}
-
-				
-
-				if($use_wpmail)
-				{
-					$header .= 'From:' . get_bloginfo('name') .' <'. urldecode( $this->form_params['autoresponder_email']) . "> \r\n";
-					$result = wp_mail($from, $this->form_params['autoresponder_subject'], $message, $header);
+					$message = '<div class="avia_custom_autoresponder">' . wp_kses_post( balanceTags( $custom_autoresponser, true ) ) . '</div>';
 				}
 				else
 				{
-					$header .= 'From:'. urldecode( $this->form_params['autoresponder_email']) . " \r\n";
-					mail($from, $this->form_params['autoresponder_subject'], $message, $header);
+					$autoresponder = nl2br( $this->form_params['autoresponder'] );
+					$message = $autoresponder . "<br /><br /><br /><strong>" . __('Your Message:','avia_framework') . " </strong><br /><br />" . $message;
+					$message = apply_filters("avf_form_autorespondermessage", $message);
+				}
+					
+				/**
+				 * @since 4.4.2
+				 */
+				$autoresponder_to = $from;
+				$autoresponder_to = apply_filters_deprecated( 'avf_form_autoresponder_from', array( $autoresponder_to, $new_post, $this->form_params ), '4.4.2', 'avf_form_autoresponder_to', __( 'Inconsistent usage of filter name.', 'avia_framework' ) );
+				$autoresponder_to = apply_filters( 'avf_form_autoresponder_to', $autoresponder_to, $new_post, $this->form_params );
+				
+				$autoresponder_email = array_filter( array_map( 'trim', explode( $delimiter, $this->form_params['autoresponder_email'] ) ) );
+				if( is_array( $autoresponder_email ) )
+				{
+					$autoresponder_email = $autoresponder_email[0];
+				}
+				
+				/**
+				 * @since 4.4.2
+				 */
+				$autoresponder_email = apply_filters( 'avf_form_autoresponder_email_from', $autoresponder_email, $new_post, $this->form_params );
+
+				if( $use_wpmail )
+				{
+					$header .= 'From: ' . get_bloginfo('name') .' <'. urldecode( $autoresponder_email ) . "> \r\n";
+					$result = wp_mail( $autoresponder_to, $this->form_params['autoresponder_subject'], $message, $header );
+				}
+				else
+				{
+					$header .= 'From: '. urldecode( $autoresponder_email ) . " \r\n";
+					mail( $autoresponder_to, $this->form_params['autoresponder_subject'], $message, $header );
 				}
 			}
+			
 			unset($_POST);
 			return true;
 			//return wp_mail( $to, $subject, $message , $header);
-
 
 		}
 
@@ -994,6 +1027,13 @@ if( ! class_exists( 'avia_form' ) )
 
 						$this->autoresponder[] = $id;
 						if(preg_match("!^[\w|\.|\-]+@\w[\w|\.|\-]*\.[a-zA-Z]{2,20}$!", urldecode($_POST[$id]))) return "valid";
+
+					break;
+						
+					case 'is_ext_email':
+
+						$this->autoresponder[] = $id;
+						if(preg_match("!^[\w|\.|\-|ÄÖÜäöü]+@\w[\w|\.|\-|ÄÖÜäöü]*\.[a-zA-Z]{2,20}$!", urldecode($_POST[$id]))) return "valid";
 
 					break;
 

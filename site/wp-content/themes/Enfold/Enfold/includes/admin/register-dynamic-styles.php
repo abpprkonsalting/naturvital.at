@@ -8,7 +8,7 @@ function avia_prepare_dynamic_styles($options = false)
 	$color_set 	= $styles		= array();
 	$post_id 					= avia_get_the_ID();
 	$options 					= apply_filters('avia_pre_prepare_colors', $options);
-	
+
 	if($options === "") { $options = array(); }
 	
 	//boxed or stretched layout
@@ -17,6 +17,11 @@ function avia_prepare_dynamic_styles($options = false)
 	//transparency color for header menu
 	$avia_config['backend_colors']['menu_transparent'] = empty($options['header_replacement_menu']) ? "" : $options['header_replacement_menu']; 
 
+	//custom color for burger menu
+	$avia_config['backend_colors']['burger_color'] = empty($options['burger_color']) ? "" : $options['burger_color']; 
+	
+	//custom width for burger menu flyout
+	$avia_config['backend_colors']['burger_flyout_width'] = empty($options['burger_flyout_width']) ? "" : $options['burger_flyout_width']; 
 	
 	//iterate over the options array to get the color and bg image options and save them to new array
 	foreach ($options as $key => $option)
@@ -115,9 +120,18 @@ function avia_prepare_dynamic_styles($options = false)
 			$repeat = $color_set[$key]['repeat'] == "fullscreen" ? "no-repeat" : $color_set[$key]['repeat'];
 			
 			$color_set[$key]['img'] = trim($color_set[$key]['img']);
+			
+			if(is_numeric($color_set[$key]['img']))
+			{
+				$color_set[$key]['img'] = wp_get_attachment_image_src($color_set[$key]['img'], 'full'); 
+				$color_set[$key]['img'] = $color_set[$key]['img'][0];
+			}
+			
 			$url = empty($color_set[$key]['img']) ? "" : "url(".$color_set[$key]['img'].")";
 
 			$color_set[$key]['background_image'] = "$bg $url ".$color_set[$key]['pos']."  ".$repeat." ".$color_set[$key]['attach'];
+			
+		
 		}
 
 		if(isset($color_set[$key]['customimage'])) unset($color_set[$key]['customimage']);

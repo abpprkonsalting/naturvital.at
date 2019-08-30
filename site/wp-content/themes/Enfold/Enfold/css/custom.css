@@ -54,7 +54,7 @@ body {
 }
 
 #menu-item-search {
-  display: none;
+  display: none !important;
 }
 
 #menu-item-131 {
@@ -97,6 +97,37 @@ display: flex;
   background: #618d33 !important;
   font-family: 'Roboto Condensed', sans-serif;
 
+}
+
+/**************************** Footer *****************************/
+
+.textwidget.custom-html-widget li a {
+
+  font-size: small;
+
+}
+
+#footer .flex_column.av_one_third {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#footer .flex_column.av_one_third:last-child {
+  flex-direction: row;
+  justify-content: center;
+}
+
+#footer #custom_html-2,
+#media_image-2,
+#custom_html-3,
+#media_image-4,
+#media_image-5,
+#media_image-6,
+#media_image-7,
+#media_image-9 {
+  left: 0 !important;
+  bottom: unset !important;
 }
 
 /*********************  Home Page ********************************************/
@@ -208,6 +239,29 @@ Mobile Styles
 ================================================== */
 /* Note: Add new css to the media query below that you want to only effect the Mobile and Tablet Portrait view */
 
+@media only screen and (max-width: 768px) {
+
+#container_wrap .main_menu .avia-menu {
+  /*display: none;*/
+  float:right;
+}
+.responsive #top .av-main-nav .menu-item-avia-special {
+  position: absolute;
+  right: 0;
+  top: -17px;
+  z-index: 9999;
+}
+
+.header_color .av-hamburger-inner, .header_color .av-hamburger-inner::before, .header_color .av-hamburger-inner::after {
+  background-color: white;
+}
+
+.av-burger-overlay-inner .avia-menu-text {
+  color: #618d33;
+}
+}
+
+
 @media only screen and (max-width: 1090px) {
 
   .padding-five {
@@ -227,10 +281,9 @@ Mobile Styles
   #container_wrap>.avia-menu.av-main-nav-wrap {
     display: flex;
   }
-  #container_wrap .main_menu .avia-menu {
+  #container_wrap .main_menu .avia-menu #avia-menu li:not(:last-child){
     display: none;
   }
-
 }
 
 @media only screen and (min-width: 1070px) and (max-width: 1090px) {
@@ -326,34 +379,5 @@ height: 350px;
   }
 
 
-  /**************************** Footer *****************************/
-
-  .textwidget.custom-html-widget li a {
-
-    font-size: small;
-
-  }
-
-  #footer .flex_column.av_one_third {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #footer .flex_column.av_one_third:last-child {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  #footer #custom_html-2,
-  #media_image-2,
-  #custom_html-3,
-  #media_image-4,
-  #media_image-5,
-  #media_image-6,
-  #media_image-7,
-  #media_image-9 {
-    left: 0 !important;
-    bottom: unset !important;
-  }
+  
 }

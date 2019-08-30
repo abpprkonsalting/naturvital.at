@@ -159,6 +159,11 @@ require( AVIA_PHP.'class-style-generator.php' );
 require( AVIA_PHP.'class-form-generator.php' );
 
 /**
+* The google maps api source and key check (backend)
+*/
+require( AVIA_PHP.'class-gmaps.php' );
+	
+/**
 * This file holds the class that creates several framework specific widgets
 */
 require( AVIA_PHP.'class-framework-widgets.php' );
@@ -180,7 +185,15 @@ require( AVIA_PHP.'class-queryfilter.php' );
 */
 require( AVIA_PHP.'class-sidebar-generator.php' );
 	
-	
+
+/**
+ * These files load the classes necessary to manage type fonts (and icon fonts in future releases
+ */
+require( AVIA_PHP.'font-management/class-avia-font-management-base.php' );
+require( AVIA_PHP.'font-management/class-avia-type-fonts.php' );
+//require( AVIA_PHP.'font-management/class-avia-icon-fonts.php' );
+
+
 if(is_admin())
 {
 
@@ -225,8 +238,7 @@ if(is_admin())
 	* This file loads the class responsible for one click theme updates
 	*/
 	require( AVIA_PHP.'auto-updates/auto-updates.php' );
-	
-	
+		
 	
 	/**
 	* This file loads the option set class to create new backend options on the fly

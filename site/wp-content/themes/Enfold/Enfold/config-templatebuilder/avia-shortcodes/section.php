@@ -1,7 +1,8 @@
 <?php
 /**
- * COLUMNS
- * Shortcode which creates columns for better content separation
+ * Color Section
+ * 
+ * Shortcode creates a section with unique background image and colors for better content sepearation
  */
 
  // Don't load directly
@@ -16,12 +17,17 @@ if ( !class_exists( 'avia_sc_section' ) )
 			static $section_count = 0;
 			static $add_to_closing = "";
 			static $close_overlay = "";
+			
 
 			/**
 			 * Create the config array for the shortcode button
 			 */
 			function shortcode_insert_button()
 			{
+				$this->config['type']			=	'layout';
+				$this->config['self_closing']	=	'no';
+				$this->config['contains_text']	=	'no';
+				
 				$this->config['name']		= __('Color Section', 'avia_framework' );
 				$this->config['icon']		= AviaBuilder::$path['imagesURL']."sc-section.png";
 				$this->config['tab']		= __('Layout Elements', 'avia_framework' );
@@ -32,6 +38,7 @@ if ( !class_exists( 'avia_sc_section' ) )
 				$this->config['tooltip'] 	= __('Creates a section with unique background image and colors', 'avia_framework' );
 				$this->config['drag-level'] = 1;
 				$this->config['drop-level'] = 1;
+				$this->config['preview'] = false;
 
 			}
 
@@ -55,8 +62,27 @@ if ( !class_exists( 'avia_sc_section' ) )
     			$data['modal_ajax_hook'] 	= $this->config['shortcode'];
 				$data['dragdrop-level'] 	= $this->config['drag-level'];
 				$data['allowed-shortcodes']	= $this->config['shortcode'];
+				$data['preview'] 			= !empty($this->config['preview']) ? $this->config['preview'] : 0;
+				
+				$title_id = !empty($args['id']) ? ": ".ucfirst($args['id']) : "";
+
+                // add background color or gradient to indicator
+                $el_bg = "";
+
+                if( empty( $args['background'] ) || ( $args['background'] == 'bg_color' ) )
+                {
+                    $el_bg = !empty($args['custom_bg']) ? " style='background:".$args['custom_bg'].";'" : "";
+                }
+                else {
+                    if ($args['background_gradient_color1'] && $args['background_gradient_color2']) {
+                        $el_bg = "style='background:linear-gradient(".$args['background_gradient_color1'].",".$args['background_gradient_color2'].");'";
+                    }
+                }
 
 
+
+				$hidden_el_active = !empty($args['av_element_hidden_in_editor']) ? "av-layout-element-closed" : "";
+				
     			if(!empty($this->config['modal_on_load']))
     			{
     				$data['modal_on_load'] 	= $this->config['modal_on_load'];
@@ -64,12 +90,13 @@ if ( !class_exists( 'avia_sc_section' ) )
 
     			$dataString  = AviaHelper::create_data_string($data);
 
-				$output  = "<div class='avia_layout_section avia_pop_class avia-no-visual-updates ".$name." av_drag' ".$dataString.">";
+				$output  = "<div class='avia_layout_section {$hidden_el_active} avia_pop_class avia-no-visual-updates ".$name." av_drag' ".$dataString.">";
 
 				$output .= "    <div class='avia_sorthandle menu-item-handle'>";
-				$output .= "        <span class='avia-element-title'>".$this->config['name']."</span>";
+				$output .= "        <span class='avia-element-title'><span class='avia-element-bg-color' ".$el_bg."></span>".$this->config['name']."<span class='avia-element-title-id'>".$title_id."</span></span>";
 			    //$output .= "        <a class='avia-new-target'  href='#new-target' title='".__('Move Section','avia_framework' )."'>+</a>";
 				$output .= "        <a class='avia-delete'  href='#delete' title='".__('Delete Section','avia_framework' )."'>x</a>";
+				$output .= "        <a class='avia-toggle-visibility'  href='#toggle' title='".__('Show/Hide Section','avia_framework' )."'></a>";
 
 				if(!empty($this->config['popup_editor']))
     			{
@@ -84,10 +111,61 @@ if ( !class_exists( 'avia_sc_section' ) )
 					$content = $this->builder->do_shortcode_backend($content);
 				}
 				$output .= $content;
-				$output .= "</div></div>";
+				$output .= "</div>";
+				
+				$output .= "<div class='avia-layout-element-bg' ".$this->get_bg_string($args)."></div>";
+				
+				
+				$output .= "<a class='avia-layout-element-hidden' href='#'>".__('Section content hidden. Click here to show it','avia_framework')."</a>";
+				
+				$output .= "</div>";
 
 				return $output;
 			}
+			
+			
+			function get_bg_string($args)
+			{
+				$style = "";
+			
+				if(!empty($args['attachment']))
+				{
+					$image = false;
+					$src = wp_get_attachment_image_src($args['attachment'], $args['attachment_size']);
+					if(!empty($src[0])) $image = $src[0];
+					
+					
+					if($image)
+					{
+						$bg 	= !empty($args['custom_bg']) ? 	$args['custom_bg'] : "transparent"; $bg = "transparent";
+						$pos 	= !empty($args['position'])  ? 	$args['position'] : "center center";
+						$repeat = !empty($args['repeat']) ?		$args['repeat'] : "no-repeat";
+						$extra	= "";
+						
+						if($repeat == "stretch")
+						{
+							$repeat = "no-repeat";
+							$extra = "background-size: cover;";
+						}
+						
+						if($repeat == "contain")
+						{
+							$repeat = "no-repeat";
+							$extra = "background-size: contain;";
+						}
+						
+						
+						
+						$style = "style='background: $bg url($image) $repeat $pos; $extra'";
+					}
+				}
+				
+				return $style;
+			}
+				
+
+			
+			
 
 			/**
 			 * Popup Elements
@@ -156,9 +234,9 @@ if ( !class_exists( 'avia_sc_section' ) )
 				   array(
 						"name" 	=> __("Section Top Border Styling",'avia_framework' ),
 						"id" 	=> "shadow",
-						"desc"  => __("Chose a border styling for the top of your section",'avia_framework' ),
+						"desc"  => __("Choose a border styling for the top of your section",'avia_framework' ),
 						"type" 	=> "select",
-						"std" 	=> "no-shadow",
+						"std" 	=> "no-border-styling",
 						"subtype" => array( __('Display a simple 1px top border','avia_framework' )	=>'no-shadow',  
 											__('Display a small styling shadow at the top of the section','avia_framework' )	=>'shadow',
 											__('No border styling','avia_framework' )	=>'no-border-styling',
@@ -169,7 +247,7 @@ if ( !class_exists( 'avia_sc_section' ) )
 				    array(
 						"name" 	=> __("Section Bottom Border Styling",'avia_framework' ),
 						"id" 	=> "bottom_border",
-						"desc"  => __("Chose a border styling for the bottom of your section",'avia_framework' ),
+						"desc"  => __("Choose a border styling for the bottom of your section",'avia_framework' ),
 						"type" 	=> "select",
 						"std" 	=> "no-border-styling",
 						"subtype" => array(   
@@ -219,16 +297,49 @@ if ( !class_exists( 'avia_sc_section' ) )
 							
 							)
 						),
-				    
-				    
-				    
-				    
-				    array(	
+
+
+                    array(
+                        "name" 	=> __("Custom top and bottom margin",'avia_framework' ),
+                        "desc" 	=> __("If checked allows you to set a custom top and bottom margin. Otherwise the margin is calculated by the theme based on surrounding elements",'avia_framework' ),
+                        "id" 	=> "margin",
+                        "type" 	=> "checkbox",
+                        "std" 	=> "",
+                    ),
+
+                    array(
+                        "name" 	=> __("Custom top and bottom margin", 'avia_framework' ),
+                        "desc" 	=> __("Set a custom top or bottom margin. Both pixel and &percnt; based values are accepted. eg: 30px, 5&percnt;", 'avia_framework' ),
+                        "id" 	=> "custom_margin",
+                        "type" 	=> "multi_input",
+                        "required" => array('margin','not',''),
+                        "std" 	=> "0px",
+                        "sync" 	=> true,
+                        "multi" => array(
+                            'top' 	=> __('Margin-Top','avia_framework'),
+                            'bottom'=> __('Margin-Bottom','avia_framework'),
+                        )
+                    ),
+
+
+                    array(
 						"name" 	=> __("Display a scroll down arrow", 'avia_framework' ),
 						"desc" 	=> __("Check if you want to show a button at the bottom of the section that takes the user to the next section by scrolling down", 'avia_framework' ) ,
 						"id" 	=> "scroll_down",
 						"std" 	=> "",
 						"type" 	=> "checkbox"),
+						
+					
+					array(
+							"name" 	=> __("Custom Arrow Color", 'avia_framework' ),
+							"desc" 	=> __("Select a custom arrow color. Leave empty if you want to use the default arrow color and style", 'avia_framework' ),
+							"id" 	=> "custom_arrow_bg",
+							"type" 	=> "colorpicker",
+							"std" 	=> "",
+							"required" => array('scroll_down','not',''),
+						),
+					
+					
 
 
 				  array(	"name" 	=> __("For Developers: Section ID", 'avia_framework' ),
@@ -259,13 +370,65 @@ if ( !class_exists( 'avia_sc_section' ) )
 						"subtype" =>  array_flip($avia_config['color_sets'])
 				    ),
 
-				    array(
-							"name" 	=> __("Custom Background Color", 'avia_framework' ),
-							"desc" 	=> __("Select a custom background color for your Section here. Leave empty if you want to use the background color of the color scheme defined above", 'avia_framework' ),
-							"id" 	=> "custom_bg",
-							"type" 	=> "colorpicker",
-							"std" 	=> "",
-						),
+                    array(
+                        "name" 	=> __("Background",'avia_framework' ),
+                        "desc" 	=> __("Select the type of background for the column.", 'avia_framework' ),
+                        "id" 	=> "background",
+                        "type" 	=> "select",
+                        "std" 	=> "bg_color",
+                        "subtype" => array(
+                            __('Background Color','avia_framework' )=>'bg_color',
+                            __('Background Gradient','avia_framework' ) =>'bg_gradient',
+                        )
+                    ),
+
+                    array(
+                        "name" 	=> __("Custom Background Color", 'avia_framework' ),
+                        "desc" 	=> __("Select a custom background color for this cell here. Leave empty for default color", 'avia_framework' ),
+                        "id" 	=> "custom_bg",
+                        "type" 	=> "colorpicker",
+                        "required" => array('background','equals','bg_color'),
+                        "rgba" 	=> true,
+                        "std" 	=> "",
+                    ),
+
+                    array(
+                        "name" 	=> __("Background Gradient Color 1", 'avia_framework' ),
+                        "desc" 	=> __("Select the first color for the gradient.", 'avia_framework' ),
+                        "id" 	=> "background_gradient_color1",
+                        "type" 	=> "colorpicker",
+                        "container_class" => 'av_third av_third_first',
+                        "required" => array('background','equals','bg_gradient'),
+                        "rgba" 	=> true,
+                        "std" 	=> "",
+                    ),
+                    array(
+                        "name" 	=> __("Background Gradient Color 2", 'avia_framework' ),
+                        "desc" 	=> __("Select the second color for the gradient.", 'avia_framework' ),
+                        "id" 	=> "background_gradient_color2",
+                        "type" 	=> "colorpicker",
+                        "container_class" => 'av_third',
+                        "required" => array('background','equals','bg_gradient'),
+                        "rgba" 	=> true,
+                        "std" 	=> "",
+                    ),
+
+                    array(
+                        "name" 	=> __("Background Gradient Direction",'avia_framework' ),
+                        "desc" 	=> __("Define the gradient direction", 'avia_framework' ),
+                        "id" 	=> "background_gradient_direction",
+                        "type" 	=> "select",
+                        "container_class" => 'av_third',
+                        "std" 	=> "vertical",
+                        "required" => array('background','equals','bg_gradient'),
+                        "subtype" => array(
+                            __('Vertical','avia_framework' )=>'vertical',
+                            __('Horizontal','avia_framework' ) =>'horizontal',
+                            __('Radial','avia_framework' ) =>'radial',
+                            __('Diagonal Top Left to Bottom Right','avia_framework' ) =>'diagonal_tb',
+                            __('Diagonal Bottom Left to Top Right','avia_framework' ) =>'diagonal_bt',
+                        )
+                    ),
 
 					array(
 							"name" 	=> __("Custom Background Image",'avia_framework' ),
@@ -347,7 +510,7 @@ if ( !class_exists( 'avia_sc_section' ) )
 					
 					array(	
 							"name" 	=> __("Hide video on Mobile Devices?", 'avia_framework' ),
-							"desc" 	=> __("You can chose to hide the video entirely on Mobile devices and instead display the Section Background image", 'avia_framework' )."<br/><small>".__("Most mobile devices can't autoplay videos to prevent bandwidth problems for the user", 'avia_framework' ) ."</small>" ,
+							"desc" 	=> __("You can choose to hide the video entirely on Mobile devices and instead display the Section Background image", 'avia_framework' )."<br/><small>".__("Most mobile devices can't autoplay videos to prevent bandwidth problems for the user", 'avia_framework' ) ."</small>" ,
 							"id" 	=> "video_mobile_disabled",
 							"required"=> array('video','not',''),
 							"std" 	=> "",
@@ -435,12 +598,67 @@ array(
 							'nodescription' => true
 						),
 
+					array(
+								"type" 	=> "tab",
+								"name"	=> __("Screen Options",'avia_framework' ),
+								'nodescription' => true
+							),
+							
+							
+							array(
+							"name" 	=> __("Element Visibility",'avia_framework' ),
+							"desc" 	=> __("Set the visibility for this element, based on the device screensize.", 'avia_framework' ),
+							"type" 	=> "heading",
+							"description_class" => "av-builder-note av-neutral",
+							),
+						
+							array(	
+									"desc" 	=> __("Hide on large screens (wider than 990px - eg: Desktop)", 'avia_framework'),
+									"id" 	=> "av-desktop-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+							
+							array(	
+								
+									"desc" 	=> __("Hide on medium sized screens (between 768px and 989px - eg: Tablet Landscape)", 'avia_framework'),
+									"id" 	=> "av-medium-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+									
+							array(	
+								
+									"desc" 	=> __("Hide on small screens (between 480px and 767px - eg: Tablet Portrait)", 'avia_framework'),
+									"id" 	=> "av-small-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+									
+							array(	
+								
+									"desc" 	=> __("Hide on very small screens (smaller than 479px - eg: Smartphone Portrait)", 'avia_framework'),
+									"id" 	=> "av-mini-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
 
+							
+						array(
+								"type" 	=> "close_div",
+								'nodescription' => true
+							),		
 							
 					array(
 							"type" 	=> "close_div",
 							'nodescription' => true
 						),
+						
+						
+						
+					array(	"id" 	=> "av_element_hidden_in_editor",
+				            "type" 	=> "hidden",
+				            "std" => "0"),
                 );
 			}
 
@@ -455,15 +673,23 @@ array(
 			function shortcode_handler($atts, $content = "", $shortcodename = "", $meta = "")
 			{
 				global $avia_config;
-			
+				
+				extract(AviaHelper::av_mobile_sizes($atts)); //return $av_font_classes, $av_title_font_classes and $av_display_classes 
+
 				avia_sc_section::$section_count ++;
 			    $atts = shortcode_atts(array(	'src' => '', 
 			    								'position' => 'top left', 
 			    								'repeat' => 'no-repeat', 
 			    								'attach' => 'scroll', 
-			    								'color' => 'main_color', 
-			    								'custom_bg' => '', 
-			    								'padding'=>'default' , 
+			    								'color' => 'main_color',
+                                                'background'		                => '',
+                                                'custom_bg' => '',
+                                                'background_gradient_color1'		=> '',
+                                                'background_gradient_color2'	   	=> '',
+                                                'background_gradient_direction'	   	=> '',
+			    								'padding'=>'default' ,
+			    								'margin' => '',
+			    								'custom_margin' => '',
 			    								'shadow'=>'shadow', 
 			    								'id'=>'', 
 			    								'min_height' => '', 
@@ -483,7 +709,8 @@ array(
 			    								'scroll_down' => '',
 			    								'bottom_border_diagonal_color' => '',
 			    								'bottom_border_diagonal_direction' => '',
-			    								'bottom_border_style'=>''
+			    								'bottom_border_style'=>'',
+			    								'custom_arrow_bg' => ''
 			    								
 			    								), 
 			    							$atts, $this->config['shortcode']);
@@ -493,36 +720,81 @@ array(
 			    $output      = "";
 			    $class       = "avia-section ".$color." avia-section-".$padding." avia-".$shadow;
 			    $background  = "";
+				$src		 = '';
 				
 				
 				$params['id'] = !empty($id) ? AviaHelper::save_string($id,'-') :"av_section_".avia_sc_section::$section_count;
 				$params['custom_markup'] = $meta['custom_markup'];
 				$params['attach'] = "";
 				
-				if(!empty($attachment) && !empty($attachment_size))
+				if( ! empty( $attachment ) && ! empty( $attachment_size ) )
 				{
-					$attachment_entry = get_post( $attachment );
+					/**
+					 * Allows e.g. WPML to reroute to translated image
+					 */
+					$posts = get_posts( array(
+											'include'			=> $attachment,
+											'post_status'		=> 'inherit',
+											'post_type'			=> 'attachment',
+											'post_mime_type'	=> 'image',
+											'order'				=> 'ASC',
+											'orderby'			=> 'post__in' )
+										);
 					
-					if(!empty($attachment_entry))
+					if( is_array( $posts ) && ! empty( $posts ) )
 					{
-	                	if(!empty($attachment_size))
-						{
-							$src = wp_get_attachment_image_src($attachment_entry->ID, $attachment_size);
-							$src = !empty($src[0]) ? $src[0] : "";
-						}
+						$attachment_entry = $posts[0];
+	                	
+						$src = wp_get_attachment_image_src( $attachment_entry->ID, $attachment_size );
+						$src = !empty($src[0]) ? $src[0] : "";
 					}
 				}
 				else
 				{
 					$attachment = false;
 				}
+
+
+                // background gradient
+
+                $gradient_val = "";
+
+                if ($atts['background'] == 'bg_gradient'){
+                    if ( $atts['background_gradient_color1'] && $atts['background_gradient_color2']) {
+
+                        switch ($atts['background_gradient_direction']) {
+                            case 'vertical':
+                                $gradient_val .= 'linear-gradient(';
+                                break;
+                            case 'horizontal':
+                                $gradient_val .= 'linear-gradient(to right,';
+                                break;
+                            case 'radial':
+                                $gradient_val .= 'radial-gradient(';
+                                break;
+                            case 'diagonal_tb':
+                                $gradient_val .= 'linear-gradient(to bottom right,';
+                                break;
+                            case 'diagonal_bt':
+                                $gradient_val .= 'linear-gradient(45deg,';
+                                break;
+                        }
+
+                        $gradient_val .= $atts['background_gradient_color1'].','.$atts['background_gradient_color2'].')';
+
+                        // Fallback background color for IE9
+                        if($custom_bg == "") $background .= "background-color: {$atts['background_gradient_color1']};";
+
+                    }
+                }
+
 				
 				if($custom_bg != "")
 			    {
 			         $background .= "background-color: {$custom_bg}; ";
 			    }
-				
-				
+
+
 				/*set background image*/
 				if($src != "")
 				{
@@ -541,7 +813,11 @@ array(
 						$background .= "background-repeat: {$repeat}; ";
 					}
 				
-				     $background .= "background-image: url({$src}); ";
+				     $background .= "background-image: url({$src})";
+					 if ($gradient_val !== '') {
+                         $background .= ", {$gradient_val}";
+                     }
+					 $background .= ";";
 				     $background .= $attach == 'parallax' ? "background-attachment: scroll; " : "background-attachment: {$attach}; ";
 				     $background .= "background-position: {$position}; ";
 				     
@@ -566,24 +842,40 @@ array(
 					$params['data'] = "data-section-bg-repeat='{$repeat}'";
 					
 				}
-				else
+				else if( ! empty( $gradient_val ) )
 				{
 					$attach = "scroll";
+					if ($gradient_val !== ""){
+                        $background .= "background-image: {$gradient_val};";
+                    }
 				}
 				
 				
-				if($custom_bg != "")
+				if($custom_bg != "" && $background == "")
 			    {
 			         $background .= "background-color: {$custom_bg}; ";
 			    }
 
-			    
-				
-			
-			    if($background) $background = "style = '{$background}'";
-			    
-			    
-			    /*check/create overlay*/
+                /* custom margin */
+                if (!empty($atts['margin'])){
+                    $explode_custom_margin = explode(',',$atts['custom_margin']);
+                    if(count($explode_custom_margin) > 1)
+                    {
+                        $atts['margin-top'] = $explode_custom_margin['0'];
+                        $atts['margin-bottom'] = $explode_custom_margin['1'];
+                    }
+                    else {
+                        $atts['margin-top'] = $atts['custom_margin'];
+                        $atts['margin-bottom'] = $atts['custom_margin'];
+                    }
+                }
+
+                $custom_margin_style = "";
+                $custom_margin_style .= AviaHelper::style_string($atts, 'margin-top');
+                $custom_margin_style .= AviaHelper::style_string($atts, 'margin-bottom');
+
+
+                /*check/create overlay*/
 				$overlay 	= "";
 				$pre_wrap 	= "<div class='av-section-color-overlay-wrap'>" ;
 				if(!empty($overlay_enable))
@@ -611,23 +903,33 @@ array(
 					
 				}
 				
-				
-				
+
 				
 				if(!empty($scroll_down))
 				{	
+					$arrow_style = "";
+					$arrow_class = "";
+					
 					if(!$overlay)
 					{
-					$params['attach'] .= $pre_wrap;	
+						$params['attach'] .= $pre_wrap;	
 					}
-					$params['attach'] .= "<a href='#next-section' title='' class='scroll-down-link' ". av_icon_string( 'scrolldown' ). "></a>";
+					
+					if(!empty($custom_arrow_bg))
+					{
+						$arrow_style = "style='color: {$custom_arrow_bg};'";
+						$arrow_class = " av-custom-scroll-down-color";
+					}
+					
+					$params['attach'] .= "<a href='#next-section' title='' class='scroll-down-link {$arrow_class}' {$arrow_style} ". av_icon_string( 'scrolldown' ). "></a>";
 				}
 			    
 			    
 			    
 				$class .= " avia-bg-style-".$attach;
-			    $params['class'] = $class." ".$meta['el_class'];
+			    $params['class'] = $class." ".$meta['el_class']." ".$av_display_classes;
 			    $params['bg']    = $background;
+                $params['custom_margin'] = $custom_margin_style;
 				$params['min_height'] = $min_height;
 				$params['min_height_px'] = $min_height_px;
 				$params['video'] = $video;
@@ -646,6 +948,12 @@ array(
 			    		$params['close'] = false;
 			    	}
 			    }
+			    
+			    if($bottom_border == 'border-extra-arrow-down')
+			    {
+				    $params['class'] .= " av-arrow-down-section";
+			    }
+			    
 		
 				
 				$avia_config['layout_container'] = "section";
@@ -722,8 +1030,9 @@ if(!function_exists('avia_new_section'))
 		global $avia_section_markup, $avia_config;
 		
 	    $defaults = array(	'class'=>'main_color', 
-	    					'bg'=>'', 
-	    					'close'=>true, 
+	    					'bg'=>'',
+	    					'custom_margin' => '',
+	    					'close'=>true,
 	    					'open'=>true, 
 	    					'open_structure' => true, 
 	    					'open_color_wrap' => true, 
@@ -745,7 +1054,7 @@ if(!function_exists('avia_new_section'))
 	    
 	    $defaults = array_merge($defaults, $params);
 	    extract($defaults);
-			
+
 	    $post_class = "";
 	    $output     = "";
 	    $bg_slider  = "";
@@ -757,7 +1066,8 @@ if(!function_exists('avia_new_section'))
 	    {
 	    	$cm		 = avia_section_close_markup();
 	    	$output .= "</div></div>{$cm}</div>".avia_sc_section::$add_to_closing.avia_sc_section::$close_overlay."</div>";
-	    	
+		avia_sc_section::$add_to_closing = '';
+	    	avia_sc_section::$close_overlay = "";
 		}
 	    //start new
 	    if($open)
@@ -804,16 +1114,33 @@ if(!function_exists('avia_new_section'))
 	        		
 	        	}
 	        	$output .= $before_new;
+
+	        	
+	        	//fix version 4.5.1 by Kriesi
+	        	//we cant just overwrite style since it might be passed by a function. eg the menu element passes z-index. need to merge the style strings
+	        	
+	        	$extra_style = "{$bg} {$custom_margin}";
+	        	$style = trim($style);
+	        	if(empty($style)) 
+	        	{
+		        	$style = "style='{$extra_style}' ";
+		        }
+		        else
+		        {
+			        $style = str_replace("style='", "style='{$extra_style} ", $style);
+			        $style = str_replace('style="', 'style="'.$extra_style.' ', $style);
+		        }
+	        	
 	        	
 	        	if($class == "main_color") $class .= " av_default_container_wrap";
 	        	
-	        	$output .= "<div {$id} class='{$class} container_wrap ".avia_layout_class( 'main' , false )."' {$bg} {$data} {$style}>"; 
+	        	$output .= "<div {$id} class='{$class} container_wrap ".avia_layout_class( 'main' , false )."' {$style} {$data}>";
 	        	$output .= !empty($bg_slider) ? $bg_slider->html() : "";
 	        	$output .= $attach;
 	        	$output .= apply_filters('avf_section_container_add','',$defaults);
 	        }
 	
-	
+			
 			//this applies only for sections. other fullwidth elements dont need the container for centering
 	        if($open_structure)
 	        {

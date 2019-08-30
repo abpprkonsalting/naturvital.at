@@ -105,12 +105,13 @@ if(!function_exists('avia_markup_helper'))
                 break;
 
             case 'image':
+		$attributes['itemprop']  = 'ImageObject';
                 $attributes['itemscope'] = 'itemscope';
                 $attributes['itemtype']  = 'https://schema.org/ImageObject';
                 break;
 
             case 'image_url':
-                $attributes['itemprop']  = 'contentURL';
+                $attributes['itemprop']  = 'thumbnailUrl';
                 break;
 
             case 'name':
@@ -355,7 +356,7 @@ if(!function_exists('av_blog_entry_markup_helper'))
 		{
 			$output .= "<span class='av-structured-data' {$publisher_markup}>
 				<span itemprop='name'>{$author_name}</span>
-				<span itemprop='logo' itemscope itemtype='http://schema.org/ImageObject'>
+				<span itemprop='logo' itemscope itemtype='https://schema.org/ImageObject'>
 				   <span itemprop='url'>{$logo_url}</span>
 				 </span>
 			  </span>";

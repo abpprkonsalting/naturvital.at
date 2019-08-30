@@ -94,6 +94,34 @@ if(!function_exists('avia_get_option'))
 
 		return $result;
 	}
+} 
+
+
+if(!function_exists('avia_update_option'))
+{
+	/**
+	* This function serves as shortcut to update a single theme option
+	*/
+	function avia_update_option($key, $value = "")
+	{
+		global $avia;
+		$avia->options['avia'][$key] = $value;
+		update_option( $avia->option_prefix , $avia->options );
+	}
+}
+
+
+if(!function_exists('avia_delete_option'))
+{
+	/**
+	* This function serves as shortcut to delete a single theme option
+	*/
+	function avia_delete_option($key)
+	{
+		global $avia;
+		unset($avia->options['avia'][$key]);
+		update_option( $avia->option_prefix , $avia->options );
+	}
 }
 
 
@@ -397,10 +425,17 @@ if(!function_exists('avia_set_title_tag'))
 {
     /**
      * generates the html page title
+	 * 
+	 * @deprecated since '3.6'
      * @return string the html page title
      */
     function avia_set_title_tag()
     {
+		if( version_compare( get_bloginfo( 'version' ), '4.1', '>=' ) )
+		{
+			_deprecated_function( 'avia_set_title_tag', '3.6', 'WP recommended function _wp_render_title_tag() - since WP 4.1 - ' );
+		}
+		
         $title = get_bloginfo('name').' | ';
         $title .= (is_front_page()) ? get_bloginfo('description') : wp_title('', false);
 
@@ -409,7 +444,6 @@ if(!function_exists('avia_set_title_tag'))
         return $title;
     }
 }
-
 
 
 if(!function_exists('avia_set_profile_tag'))
@@ -557,7 +591,7 @@ if(!function_exists('avia_html5_video_embed'))
 	 * Creates HTML 5 output and also prepares flash fallback for a video of choice
 	 * @return string HTML5 video element
 	 */
-	function avia_html5_video_embed($path, $image = "", $types = array('webm' => 'type="video/webm"', 'mp4' => 'type="video/mp4"', 'ogv' => 'type="video/ogg"'))
+	function avia_html5_video_embed($path, $image = "", $types = array('webm' => 'type="video/webm"', 'mp4' => 'type="video/mp4"', 'ogv' => 'type="video/ogg"'), $attributes = array('autoplay' => 0, 'loop' => 1, 'preload' => ''  ))
 	{
 
 		preg_match("!^(.+?)(?:\.([^.]+))?$!", $path, $path_split);
@@ -569,10 +603,27 @@ if(!function_exists('avia_html5_video_embed'))
 			{
 				$image = 'poster="'.$path_split[1].'.jpg"'; //poster image isnt accepted by the player currently, waiting for bugfix
 			}
+			else if($image)
+			{
+				$image = 'poster="'.$image.'"'; 
+			}
+
+			$autoplay = $attributes['autoplay'] == 1 ? 'autoplay' : '';
+			$loop = $attributes['loop'] == 1 ? 'loop' : '';
+			$muted = $attributes['muted'] == 1 ? 'muted' : '';
+			
+			if( ! empty( $attributes['preload'] ) )
+			{
+				$metadata = 'preload="' . $attributes['preload'] . '"';
+			}
+			else
+			{
+				$metadata = $attributes['loop'] == 1 ? 'preload="metadata"' : 'preload="auto"';
+			}
 
 			$uid = 'player_'.get_the_ID().'_'.mt_rand().'_'.mt_rand();
 
-			$output .= '<video class="avia_video" '.$image.' controls id="'.$uid.'" >';
+			$output .= '<video class="avia_video" '.$image.' '.$autoplay.' '.$loop.' '.$metadata.' '.$muted.' controls id="'.$uid.'" >';
 
 			foreach ($types as $key => $type)
 			{
@@ -588,7 +639,6 @@ if(!function_exists('avia_html5_video_embed'))
 		return $output;
 	}
 }
-
 
 if(!function_exists('avia_html5_audio_embed'))
 {
@@ -858,7 +908,23 @@ if(!function_exists('avia_pagination'))
 			{
 				if (1 != $pages &&( !($i >= $paged+$range+1 || $i <= $paged-$range-1) || $pages <= $showitems ))
 				{
-					$output .= ($paged == $i)? "<span class='current'>".$i."</span>":"<a href='".$method($i)."' class='inactive' >".$i."</a>";
+					switch( $i )
+					{
+						case ( $paged == $i ):
+							$class = 'current';
+							break;
+						case ( ( $paged - 1 ) == $i ):
+							$class = 'inactive previous_page';
+							break;
+						case ( ( $paged + 1 ) == $i ):
+							$class = 'inactive next_page';
+							break;
+						default:
+							$class = 'inactive';
+							break;
+					}
+					
+					$output .= ( $paged == $i )? "<span class='{$class}'>" . $i . "</span>" : "<a href='" . $method($i) . "' class='{$class}' >" . $i . "</a>";
 				}
 			}
 
@@ -867,13 +933,22 @@ if(!function_exists('avia_pagination'))
 			$output .= "</$wrapper>\n";
 		}
 
-		return $output;
+		return apply_filters( 'avf_pagination_output', $output, $paged, $pages, $wrapper );
 	}
 
 	function avia_post_pagination_link($link)
 	{
-		$url =  preg_replace('!">$!','',_wp_link_page($link));
-		$url =  preg_replace('!^<a href="!','',$url);
+		global $post;
+		
+		//the _wp_link_page uses get_permalink() which might be changed by a query. we need to get the original post id temporarily
+		$temp_post = $post;
+		// $post = get_post(avia_get_the_id()); 
+		
+		$url =  preg_replace( '!">$!','',_wp_link_page($link) );
+		$url =  preg_replace( '!^<a href="!','',$url );
+		
+		$post = $temp_post;
+		
 		return $url;
 	}
 }
@@ -959,7 +1034,6 @@ if(!function_exists('avia_check_custom_widget'))
 
 	}
 }
-
 
 
 if(!function_exists('avia_which_archive'))
@@ -1167,7 +1241,7 @@ if(!function_exists('avia_get_browser'))
 	        $bname = 'Netscape';
 	        $ub = "Netscape";
 	    }
-
+	    
 	    // finally get the correct version number
 	    $known = array('Version', $ub, 'other');
 	    $pattern = '#(?<browser>' . join('|', $known) .
@@ -1321,14 +1395,31 @@ if(!function_exists('avia_debugging_info'))
 		$info .= "AviaFramework Version: ".AV_FRAMEWORK_VERSION."\n";
 
 
-		if(class_exists( 'AviaBuilder' ))
+		if( class_exists( 'AviaBuilder' ) )
+		{
 			$info .= "AviaBuilder Version: ".AviaBuilder::VERSION."\n";
+			
+			if( class_exists( 'aviaElementManager' ) )
+			{
+				$info .= "aviaElementManager Version: " . aviaElementManager::VERSION . "\n";
+				$update_state = get_option( 'av_alb_element_mgr_update', '' );
+				if( '' != $update_state )
+				{
+					$info .= "aviaElementManager update state: in update \n";
+				}
+			}
+		}
+		
 
 		$info .= $child;
 
 		//memory setting, peak usage and number of active plugins
-		$info .= "ML:".trim( @ini_get("memory_limit") ,"M")."-PU:". ( ceil (memory_get_peak_usage() / 1000 / 1000 ) ) ."-PLA:".count(get_option('active_plugins'))."\n";
+		$info .= "ML:".trim( @ini_get("memory_limit") ,"M")."-PU:". ( ceil (memory_get_peak_usage() / 1000 / 1000 ) ) ."-PLA:".avia_count_active_plugins()."\n";
 		$info .= "WP:".get_bloginfo('version')."\n";
+		
+		$comp_levels = array('none' => 'disabled', 'avia-module' => 'modules only', 'avia' => 'all theme files', 'all' => 'all files');
+		
+		$info .= "Compress: CSS:".$comp_levels[avia_get_option('merge_css','avia-module')]." - JS:".$comp_levels[avia_get_option('merge_js','avia-module')]."\n";
 		
 		$username = avia_get_option('updates_username');
 		$API = avia_get_option('updates_api_key');
@@ -1340,13 +1431,37 @@ if(!function_exists('avia_debugging_info'))
 		}
 		
 		$info .= "Updates: ".$updates."\n";
-		$info .= "-->\n\n";
+		$info  = apply_filters('avf_debugging_info_add', $info);
+		$info .= "-->";
 		echo apply_filters('avf_debugging_info', $info);
 	}
 
-	add_action('wp_head','avia_debugging_info',1000);
-	add_action('admin_print_scripts','avia_debugging_info',1000);
+	add_action('wp_head','avia_debugging_info',9999999);
+	add_action('admin_print_scripts','avia_debugging_info',9999999);
 }
+
+
+
+
+
+
+if(!function_exists('avia_count_active_plugins'))
+{
+	function avia_count_active_plugins() 
+	{
+	   $plugins = count(get_option('active_plugins', array()));
+	
+	   if(is_multisite() && function_exists('get_site_option'))
+	   {
+		   $plugins += count(get_site_option('active_sitewide_plugins', array()));
+	   }
+	   
+	   return $plugins;
+	}
+}
+
+
+
 
 
 
@@ -1362,20 +1477,21 @@ if(!function_exists('avia_clean_string'))
 }
 
 
-
 if(!function_exists('kriesi_backlink'))
 {
-	function kriesi_backlink($frontpage_only = false)
+	function kriesi_backlink($frontpage_only = false, $theme_name_passed = false)
 	{	
 		$no = "";
 		$theme_string	= "";
+		$theme_name 	= $theme_name_passed ? $theme_name_passed : THEMENAME;
+		
 		$random_number 	= get_option(THEMENAMECLEAN."_fixed_random");
-		if($random_number % 3 == 0) $theme_string = THEMENAME." Theme by Kriesi";
-		if($random_number % 3 == 1) $theme_string = THEMENAME." WordPress Theme by Kriesi";
-		if($random_number % 3 == 2) $theme_string = "powered by ".THEMENAME." WordPress Theme";
+		if($random_number % 3 == 0) $theme_string = $theme_name." Theme by Kriesi";
+		if($random_number % 3 == 1) $theme_string = $theme_name." WordPress Theme by Kriesi";
+		if($random_number % 3 == 2) $theme_string = "powered by ".$theme_name." WordPress Theme";
 		if(!empty($frontpage_only) && !is_front_page()) $no = "rel='nofollow'";
 		
-		$link = " - <a {$no} href='http://www.kriesi.at'>{$theme_string}</a>";
+		$link = " - <a {$no} href='https://kriesi.at'>{$theme_string}</a>";
 	
 		$link = apply_filters("kriesi_backlink", $link);
 		return $link;
@@ -1392,4 +1508,181 @@ if(!function_exists('avia_header_class_filter'))
 		return $default;
 	}
 }
+
+
+if(!function_exists('avia_theme_version_higher_than'))
+{
+	function avia_theme_version_higher_than( $check_for_version = "")
+	{	
+		$theme = wp_get_theme( 'enfold' );
+		$theme_version = $theme->get( 'Version' );
+		
+		if (version_compare($theme_version, $check_for_version , '>=')) {
+			return true;
+		}
+		
+		return false;
+	}
+}
+
+if( ! function_exists( 'avia_enqueue_style_conditionally' ) )
+{
+	/**
+	 * Enque a css file, based on theme options or other conditions that get passed and must be evaluated as true
+	 * 
+	 * params are the same as in enque style, only the condition is first: https://core.trac.wordpress.org/browser/tags/4.9/src/wp-includes/functions.wp-styles.php#L164
+	 * @since 4.3
+	 * @added_by Kriesi
+	 * @param array $condition
+	 * @return array
+	 */
+	function avia_enqueue_style_conditionally( $condition = false, $handle, $src = '', $deps = array(), $ver = false, $media = 'all', $deregister = true)
+	{
+		if($condition == false )
+		{
+			if($deregister) wp_deregister_style( $handle );
+			return;
+		};
+		
+		wp_enqueue_style( $handle, $src, $deps, $ver, $media );
+	}
+}
+
+if( ! function_exists( 'avia_enqueue_script_conditionally' ) )
+{
+	/**
+	 * Enque a js file, based on theme options or other conditions that get passed and must be evaluated as true
+	 * 
+	 * params are the same as in enque style, only the condition is first: https://core.trac.wordpress.org/browser/tags/4.9/src/wp-includes/functions.wp-scripts.php#L264
+	 * @since 4.3
+	 * @added_by Kriesi
+	 * @param array $condition
+	 * @return array
+	 */
+	function avia_enqueue_script_conditionally( $condition = false, $handle, $src = '', $deps = array(), $ver = false, $in_footer = false, $deregister = true)
+	{
+		if($condition == false )
+		{
+			if($deregister) wp_deregister_script( $handle );
+			return;
+		};
+		
+		wp_enqueue_script( $handle, $src, $deps, $ver, $in_footer );
+	}
+}
+
+if( ! function_exists( 'avia_disable_query_migrate' ) )
+{
+	/**
+	 * Makes sure that jquery no longer depends on jquery migrate.
+	 * 
+	 * @since 4.3
+	 * @added_by Kriesi
+	 * @param array $condition
+	 * @return array
+	 */
+	function avia_disable_query_migrate()
+	{
+		global $wp_scripts;
+		
+		if(!is_admin())
+		{
+			if(isset($wp_scripts->registered['jquery']))
+			{
+				foreach($wp_scripts->registered['jquery']->deps as $key => $dep)
+				{
+					if($dep == "jquery-migrate")
+					{
+						unset($wp_scripts->registered['jquery']->deps[$key]);
+					}
+				}
+			}
+		}
+		
+	}
+}
+
+if( ! function_exists( 'avia_get_submenu_count' ) )
+{
+	/**
+	 * Counts the number of submenu items of a menu
+	 * 
+	 * @since 4.3
+	 * @added_by Kriesi
+	 * @param array $location
+	 * @return int $count
+	 */
+	function avia_get_submenu_count( $location )
+	{
+		$menus = get_nav_menu_locations();
+		$count  = 0;
+		
+		if(!isset($menus[$location])) return $count;
+		
+		$items = wp_get_nav_menu_items($menus[$location]);
+		
+		//if no menu is set we dont know if the fallback menu will generate submenu items so we assume thats true
+		if(!$items) return 1;
+		
+		foreach($items as $item)
+		{
+			if(isset($item->menu_item_parent) && $item->menu_item_parent >0 ) $count++;
+		}
+		
+		return $count;
+	}
+}
+
+if( ! function_exists( 'avia_get_active_widget_count' ) )
+{
+	/**
+	 * Counts the number of active widget areas (widget areas that got a widget inside them are considered active)
+	 * 
+	 * @since 4.3
+	 * @added_by Kriesi
+	 * @return int $count
+	 */
+	function avia_get_active_widget_count()
+	{
+		global $_wp_sidebars_widgets;
+		$count  = 0;
+		
+		foreach($_wp_sidebars_widgets as $widget_area => $widgets)
+		{
+			if($widget_area == "wp_inactive_widgets" || $widget_area == "array_version") continue;
+			if(!empty($widgets)) $count++;
+		}
+		
+		return $count;
+	}
+}
+
+if( ! function_exists( 'avia_get_parent_theme_version' ) )
+{
+	/**
+	 * Helper function that returns the (parent) theme version number to be added to scipts and css links
+	 * 
+	 * @since 4.3.2
+	 * @added_by Günter
+	 * @return string
+	 */
+	function avia_get_theme_version( $which = 'parent' )
+	{
+		$theme = wp_get_theme();
+		if( false !== $theme->parent() && ( 'parent' == $which ) )
+		{
+			$theme = $theme->parent();
+		}
+		$vn = $theme->get( 'Version' );
+		
+		return $vn;
+	}
+}
+
+
+
+
+
+
+
 

@@ -1,5 +1,8 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+
+
 /* - WPML compatibility - */
 if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 {
@@ -235,7 +238,11 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	{
 		function avia_wpml_register_assets()
 		{
-			wp_enqueue_style( 'avia-wpml', AVIA_BASE_URL.'config-wpml/wpml-mod.css');
+			$theme = wp_get_theme(); 
+			$version = ( false === $theme->parent() ) ? $theme->get( 'Version' ) : $theme->parent()->get( 'Version' );
+			
+			wp_enqueue_style( 'avia-wpml', AVIA_BASE_URL.'config-wpml/wpml-mod.css', array(), $version );
+			wp_enqueue_script( 'avia-wpml-script', AVIA_BASE_URL.'config-wpml/wpml-mod.js', array( 'jquery' ), $version );
 		}
 	}
 
@@ -254,7 +261,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
             if(empty($avia_config['wpml_language_menu_position'])) $avia_config['wpml_language_menu_position'] = apply_filters('avf_wpml_language_switcher_position', 'sub_menu');
             if($avia_config['wpml_language_menu_position'] != 'sub_menu') return;
 
-			$languages = icl_get_languages('skip_missing=0&orderby=custom');
+			// icl_get_languages deprecated since 3.2
+			$languages = function_exists( 'wpml_get_active_languages_filter' ) ? wpml_get_active_languages_filter( '', 'skip_missing=0&orderby=custom' ) : icl_get_languages( 'skip_missing=0&orderby=custom' );
 			$output = "";
 
 			if(is_array($languages))
@@ -341,7 +349,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		*/
 		function avia_wpml_correct_domain_in_url($url)
 		{
-		    if (function_exists('icl_get_home_url'))
+			//  icl_get_home_url was deprecaated since 3.2
+		    if( function_exists( 'wpml_get_home_url_filter' ) || function_exists( 'icl_get_home_url' ) )
 		    {
 		        // Use the language switcher object, because that contains WPML settings, and it's available globally
 		        global $icl_language_switcher, $avia_config;
@@ -351,7 +360,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		        {
 					if(!avia_wpml_is_default_language())
 					{
-		            	return str_replace(untrailingslashit( get_option('home') ), untrailingslashit(icl_get_home_url()), $url);
+						$wpml_home = function_exists( 'wpml_get_home_url_filter' ) ? wpml_get_home_url_filter() : icl_get_home_url();
+		            	return str_replace( untrailingslashit( get_option( 'home' ) ), untrailingslashit( $wpml_home ), $url );
 		    		}
 		    	}
 		    }
@@ -394,7 +404,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
                 $query .= $_SERVER['QUERY_STRING'] . '&';
             }
 
-			$languages = icl_get_languages('skip_missing=0&orderby=id');
+			// icl_get_languages deprecated since 3.2
+			$languages = function_exists( 'wpml_get_active_languages_filter' ) ? wpml_get_active_languages_filter( '', 'skip_missing=0&orderby=id' ) : icl_get_languages( 'skip_missing=0&orderby=id' );
 			$output = "";
 
 			if(is_array($languages) && !empty($languages))
@@ -485,7 +496,7 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		function avia_change_wpml_home_link($url, $lang)
 		{
 		    global $sitepress;
-		    if(is_home() || is_front_page()) $url = $sitepress->language_url($lang['language_code']);
+		    if(is_front_page()) $url = $sitepress->language_url($lang['language_code']);
 		    return $url;
 		}
 	}
@@ -493,19 +504,31 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 
 	if(!function_exists('avia_wpml_slideshow_slide_id_check'))
 	{
-		add_filter( 'avf_avia_builder_slideshow_filter', 'avia_wpml_slideshow_slide_id_check', 10, 1);
-		function avia_wpml_slideshow_slide_id_check($slideshow_data)
+		add_filter( 'avf_avia_builder_slideshow_filter', 'avia_wpml_slideshow_slide_id_check', 10, 2 );
+		
+		/**
+		 * Change ID of post array back to untranslated ID to be able to recognise selected image
+		 * 
+		 * @param array $slideshow_data
+		 * @param mixed $context_object
+		 * @return array
+		 */
+		function avia_wpml_slideshow_slide_id_check( $slideshow_data, $context_object )
 		{
 		    $id_array = $slideshow_data['id_array'];
 		    $slides = $slideshow_data['slides'];
 		
-		    if(empty($id_array) || empty($slides)) return $slideshow_data;
+		    if( empty( $id_array ) || empty( $slides ) ) 
+			{
+				return $slideshow_data;
+			}
 		
 		    foreach($id_array as $key => $id)
 		    {
 		        if(!isset($slides[$id]))
 		        {
-		            $id_of_translated_attachment = icl_object_id($id, "attachment", true);
+					//	icl_object_id deprecated since 3.2 - backward comp only
+		            $id_of_translated_attachment = function_exists( 'wpml_object_id_filter' ) ? wpml_object_id_filter( $id, "attachment", true ) : icl_object_id( $id, "attachment", true );
 		
 		            if($id_of_translated_attachment && isset($slides[$id_of_translated_attachment]))
 		            {
@@ -561,7 +584,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		        if(empty($avia_config['wpml_language_menu_position'])) $avia_config['wpml_language_menu_position'] = apply_filters('avf_wpml_language_switcher_position', 'main_menu');
 		        if($avia_config['wpml_language_menu_position'] != 'main_menu') return $items;
 		
-		        $languages = icl_get_languages('skip_missing=0&orderby=custom');
+				// icl_get_languages deprecated since 3.2
+		        $languages = function_exists( 'wpml_get_active_languages_filter' ) ? wpml_get_active_languages_filter( '', 'skip_missing=0&orderby=custom' ) : icl_get_languages('skip_missing=0&orderby=custom');
 		
 		        if(is_array($languages))
 		        {
@@ -569,7 +593,7 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		            {
 		                $currentlang = (ICL_LANGUAGE_CODE == $lang['language_code']) ? 'avia_current_lang' : '';
 		
-		                if(is_home() || is_front_page()) $lang['url'] = $sitepress->language_url($lang['language_code']);
+		                if(is_front_page()) $lang['url'] = $sitepress->language_url($lang['language_code']);
 		
 		                $items .= "<li class='av-language-switch-item language_".$lang['language_code']." $currentlang'><a href='".$lang['url']."'>";
 		                $items .= "	<span class='language_flag'><img title='".$lang['native_name']."' src='".$lang['country_flag_url']."' /></span>";
@@ -602,7 +626,9 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	{
 		function avia_wpml_translate_all_search_results_url($search_messages, $search_query)
 		{
-			$search_messages['all_results_link'] =  icl_get_home_url() . '?' . $search_messages['all_results_query'];
+			//  icl_get_home_url was deprecaated since 3.2
+			$wpml_home = function_exists( 'wpml_get_home_url_filter' ) ? wpml_get_home_url_filter() : icl_get_home_url();
+			$search_messages['all_results_link'] = $wpml_home . '?' . $search_messages['all_results_query'];
 			return $search_messages;
 		}
 	
@@ -622,7 +648,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 			{
 				foreach ($query['tax_query'][0]['terms'] as $id)
 				{
-					$xlat = @icl_object_id($id, $query['tax_query'][0]['taxonomy'], true);
+					//	icl_object_id deprecated since 3.2 - backward comp only
+					$xlat = function_exists( 'wpml_object_id_filter' ) ?  wpml_object_id_filter( $id, $query['tax_query'][0]['taxonomy'], true ) : icl_object_id( $id, $query['tax_query'][0]['taxonomy'], true );
 					if(!is_null($xlat)) $res[] = $xlat;
 				}
 			
@@ -632,7 +659,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 			{
 				foreach($query['post__in'] as $id)
 				{
-					$xlat = @icl_object_id($id, $query['post_type'], true);
+					//	icl_object_id deprecated since 3.2 - backward comp only
+					$xlat = function_exists( 'wpml_object_id_filter' ) ?  wpml_object_id_filter( $id, $query['post_type'], true ) : icl_object_id(  $id, $query['post_type'], true );
 					if(!is_null($xlat)) $res[] = $xlat;
 				}
 				
@@ -665,13 +693,14 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 						continue;
 					}
 						
-					$translated_id = icl_object_id( $orig_term->term_id, 'post_tag', true );
+					//	icl_object_id deprecated since 3.2 - backward comp only
+					$translated_id = function_exists( 'wpml_object_id_filter' ) ? wpml_object_id_filter( $orig_term->term_id, 'post_tag', true ) : icl_object_id( $orig_term->term_id, 'post_tag', true );
 					if( is_null( $translated_id ) || ( false === $translated_id ) )
 					{
 						continue;
 					}
 					
-					$translated_term = icl_object_id( $translated_id->term_id, 'post_tag', true );
+					$translated_term = function_exists( 'wpml_object_id_filter' ) ? wpml_object_id_filter( $translated_id->term_id, 'post_tag', true ) : icl_object_id(  $translated_id->term_id, 'post_tag', true );
 					if( is_null( $translated_term ) || ( false === $translated_term ) )
 					{
 						continue;
@@ -684,31 +713,172 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	
 	    add_filter('avf_ratio_check_by_tag_values', 'avia_translate_check_by_tag_values', 10, 1);
 	}
+	
+	if( ! function_exists( 'avia_wpml_error404' ) )
+	{
+		/**
+		 * Add custom 404 page - needed because WPML manipulates the post query in get_headers()
+		 * 
+		 * @since 4.5.1
+		 */
+		function avia_wpml_error404()
+		{
+			global $avia_config, $wp_query;
 
+			if( ! isset( $avia_config['modified_main_query'] ) || ( ! $avia_config['modified_main_query'] instanceof WP_Query ) )
+			{
+				return;
+			}
 
+			if( 'error404_custom' == avia_get_option( 'error404_custom' ) ) 
+			{
+				$wp_query = $avia_config['modified_main_query'];
+				$wp_query->rewind_posts();
+				return;
+			}
+		}
+
+		add_filter( 'ava_builder_template_after_header', 'avia_wpml_error404', 999 );
+		add_filter( 'ava_page_template_after_header', 'avia_wpml_error404', 999 );
+	}
+	
+	
+	if( ! function_exists( 'avia_wpml_get_special_pages_ids' ) )
+	{
+		add_filter( 'avf_get_special_pages_ids', 'avia_wpml_get_special_pages_ids', 20, 2 );
+
+		/**
+		 * Returns page id's that do not belong to normal page lists 
+		 * like custom 404, custom maintainence mode page, custom footer page
+		 * Returns an array of all languages
+		 * 
+		 * @since 4.5.1
+		 * @param array $post_ids
+		 * @param string $context
+		 * @return array
+		 */
+		function avia_wpml_get_special_pages_ids( $post_ids = array(), $context = '' )
+		{
+			global $avia_config;
+
+			$langs = $avia_config['wpml']['lang'];
+
+			$maintenance_mode = avia_wpml_get_options( 'maintenance_mode' );
+			$maintenance_page = avia_wpml_get_options( 'maintenance_page' );
+			$error404_custom = avia_wpml_get_options( 'error404_custom' );
+			$error404_page = avia_wpml_get_options( 'error404_page' );
+			$display_widgets_socket = avia_wpml_get_options( 'display_widgets_socket' );
+			$footer_page = avia_wpml_get_options( 'footer_page' );
+
+			foreach( $langs as $lang_id => $lang ) 
+			{	
+						// Maintenance Page
+//				if( ( 'maintenance_mode' == $maintenance_mode[ $lang_id ] ) && is_numeric( $maintenance_page[ $lang_id ] ) && ( 0 != $maintenance_page[ $lang_id ] ) )
+				if( is_numeric( $maintenance_page[ $lang_id ] ) && ( 0 != $maintenance_page[ $lang_id ] ) )
+				{
+					$post_ids[] = $maintenance_page[ $lang_id ];
+				}
+
+						// 404 Page
+//				if( ( 'error404_custom' == $error404_custom[ $lang_id ] ) && is_numeric( $error404_page[ $lang_id ] ) && ( 0 != $error404_page[ $lang_id ] ) )
+				if( is_numeric( $error404_page[ $lang_id ] ) && ( 0 != $error404_page[ $lang_id ] ) )
+				{
+					$post_ids[] = $error404_page[ $lang_id ];
+				}		
+
+						// Footer Page
+//				if( ( strpos( $display_widgets_socket[ $lang_id ], 'page_in_footer' ) === 0 ) && is_numeric( $footer_page[ $lang_id ] ) && ( 0 != $footer_page[ $lang_id ] ) )
+				if( is_numeric( $footer_page[ $lang_id ] ) && ( 0 != $footer_page[ $lang_id ] ) )
+				{
+					$post_ids[] = $footer_page[ $lang_id ];
+				}
+			}
+
+			$post_ids = array_unique( $post_ids, SORT_NUMERIC );
+			return $post_ids;
+		}
+	}
 
 
 }
 
 /*fix for: https://wpml.org/errata/translation-editor-support-avia-layout-builder-enfold/*/
-if(!function_exists('avia_wpml_sync_avia_layout_builder'))
+/**
+ * Removed with 4.2.6 by Günter
+ * Replaced by function below
+ * 
+ * The datastructire of $fields must have changed. On testing if was always false because $fields['body']['data'] does not exist any more
+ */
+if( ! function_exists( 'avia_wpml_sync_avia_layout_builder' ) )
 {
-	add_action( 'wpml_translation_job_saved', 'avia_wpml_sync_avia_layout_builder', 10, 3 );
-	
-	function avia_wpml_sync_avia_layout_builder( $new_post_id, $fields, $job ) {
-	    if ( isset( $fields['body']['data'] ) ) {
-	        if ( 'active' === get_post_meta( $new_post_id, '_aviaLayoutBuilder_active', true ) ) {
-	            update_post_meta(
-	                $new_post_id,
-	                '_aviaLayoutBuilderCleanData',
-	                $fields['body']['data']
-	            );
-	        }
-	    }
+	/**
+	 * Ensure backwards comp - structure was checked with this version - might already have been changed earlier
+	 */
+	if ( defined( 'WPML_TM_VERSION' ) && version_compare( WPML_TM_VERSION, '2.5.2', '<' ) )
+	{
+		add_action( 'wpml_translation_job_saved', 'avia_wpml_sync_avia_layout_builder', 10, 3 );
+
+		function avia_wpml_sync_avia_layout_builder( $new_post_id, $fields, $job ) 
+		{
+			if( isset( $fields['body']['data'] ) ) 
+			{
+				if ( 'active' === get_post_meta( $new_post_id, '_aviaLayoutBuilder_active', true ) ) 
+				{
+					update_post_meta(
+						$new_post_id,
+						'_aviaLayoutBuilderCleanData',
+						$fields['body']['data']
+					);
+				}
+			}
+		}
 	}
-	
 }
 
+if( ! function_exists( 'avia_wpml_sync_avia_layout_builder_meta' ) )
+{
+	add_action( 'wpml_pro_translation_completed', 'avia_wpml_sync_avia_layout_builder_meta', 10, 3 );
+
+	/**
+	 * This filter is called when translation management is active and a post is translated with the WPML translation screen (not directly).
+	 * In this case the save_post filter is not called and we have to update our meta fields here (esp. the shortcode tree)
+	 * Post has been updated in DB already.
+	 * 
+	 * @since 4.2.6
+	 * @added_by Günter
+	 * @param int $new_post_id
+	 * @param array $fields
+	 * @param stdClass $job
+	 */
+	function avia_wpml_sync_avia_layout_builder_meta( $new_post_id, $fields, $job )
+	{
+		$post = get_post( $new_post_id );
+
+		if( ! $post instanceof WP_Post )
+		{
+			return;
+		}
+
+		$builder_status = Avia_Builder()->get_alb_builder_status( $new_post_id );
+
+		if( 'active' != $builder_status )
+		{
+			$content =  $post->post_content;
+			$loc = 'content';
+		}
+		else
+		{
+			$content = get_post_meta( $new_post_id, '_aviaLayoutBuilderCleanData', true );
+			$loc = 'clean_data';
+		}
+
+		Avia_Builder()->get_shortcode_parser()->set_builder_save_location( $loc );
+		$content = ShortcodeHelper::clean_up_shortcode( $content, 'balance_only' );
+
+		$tree = ShortcodeHelper::build_shortcode_tree( $content );
+		Avia_Builder()->save_shortcode_tree( $new_post_id, $tree );
+	}
+}
 
 
 /*compatibility function for the portfolio problems*/
@@ -727,5 +897,111 @@ if(!function_exists('avia_portfolio_compat') && defined('ICL_SITEPRESS_VERSION')
 		}
 	}
 }
+
+
+
+/**
+ * Error 404 - Custom Page
+ * Hooks into 'the_posts' filter and display the defined 404 page - compatible with WPML
+ * Removed by günter with 4.4.2 and replaced with wp_redirect to set 404 header code
+ * 
+ * Left in case we need a fallback - can be deleted in some future version
+ * 
+ * @author tinabillinger
+ * @since 4.3
+ */
+//if( ! function_exists( 'av_error404_wpml' ) )
+//{
+//    function av_error404_wpml($posts)
+//    {
+//        if( defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE') && !is_admin()) {
+//            if (avia_get_option('error404_custom') == "error404_custom") {
+//                // prevent endless loop
+//                remove_filter( 'the_posts', 'av_error404_wpml', 999 );
+//                if ( empty( $posts ) &&
+//                    is_main_query() &&
+//                    !is_robots() &&
+//                    !is_home() &&
+//                    !is_feed() &&
+//                    !is_search() &&
+//                    !is_archive() &&
+//                    ( !defined('DOING_AJAX') || !DOING_AJAX ) ) {
+//                    global $wp_query;
+//                    $error404_page = avia_get_option('error404_page');
+//                    $wp_query = null;
+//                    $wp_query = new WP_Query();
+//                    $wp_query->query( 'page_id=' . $error404_page );
+//                    $wp_query->the_post();
+//                    $template = get_page_template();
+//                    $posts = $wp_query->posts;
+//                    $wp_query->rewind_posts();
+//                    return $posts;
+//                }
+//            }
+//        }
+//        return $posts;
+//    }
+//    add_filter( 'the_posts', 'av_error404_wpml', 999 );
+//}
+
+
+if( ! function_exists( 'av_wpml_get_fb_language_code' ) )
+{
+	/**
+	 * Return the current WPML facebook language code
+	 * 
+	 * @since 4.3.2
+	 * @author Günter
+	 * @param string $langcode
+	 * @param string $source				'fb-page'
+	 */
+	function av_wpml_get_fb_language_code( $langcode, $source )
+	{
+		//	icl_object_id deprecated since 3.2 - backward comp only
+		if( function_exists( 'wpml_object_id_filter' ) || function_exists( 'icl_object_id' ) ) 
+		{
+			$locale = ICL_LANGUAGE_NAME_EN;
+			$fbxml = @simplexml_load_file( AVIA_BASE . '/config-wpml/FacebookLocales.xml' );
+
+			if( is_object( $fbxml ) )
+			{
+				foreach( $fbxml as $loc ) 
+				{
+					if( $loc->englishName == $locale ) 
+					{
+						$langcode = $loc->codes->code->standard->representation;
+						break;
+					}
+				}
+			}
+		}
+		
+		return $langcode;
+	}
+	
+}
+
+if( ! function_exists( 'av_wpml_breadcrumbs_get_parents' ) )
+{
+	add_filter( 'avf_breadcrumbs_get_parents', 'av_wpml_breadcrumbs_get_parents', 10, 1 );
+	
+	/**
+	 * Allow to translate breadcrumb trail - fixes a problem with parent page for portfolio not being translated correctly
+	 * https://kriesi.at/support/topic/parent-page-link-works-correct-but-translation-doesnt/
+	 * https://wpml.org/forums/topic/enfold-theme-cant-copy-breadcrumb-hierarchy/#post-893784
+	 * 		
+	 * @since 4.5.1
+	 * @param int $post_id
+	 * @return int
+	 */
+	function av_wpml_breadcrumbs_get_parents( $post_id )
+	{
+		return apply_filters( 'wpml_object_id' , $post_id, 'page', true );
+	}
+
+}
+
+
+
 
 
