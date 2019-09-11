@@ -130,7 +130,8 @@ display: flex;
 
 body.home .avia-button {
   border-radius: 30px;
-  background: #618d33;
+  background: #75b616;
+    border-color: #75b616 !important;
 }
 
 
@@ -160,51 +161,19 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia
 
 /************ Second Section ***********/
 
-body.home #av_section_1 .entry-content .content-slider-slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+body.home #av_section_1 .flex_column.av_one_fifth {
+  min-height: 320px;
+    display: flex;
+    flex-direction: column;
 }
 
-body.home #av_section_1 .entry-content .content-slider-slide>div {
-  width: 50%;
-  display: flex;
-  justify-content: center;
-}
-
-body.home #av_section_1 .entry-content .content-slider-slide>div.second-col {
-  flex-direction: column;
-}
-
-body.home #av_section_1 .entry-content .content-slider-slide .slidetext2 {
-  max-width: 80%
-}
-
-
-body.home #av_section_1 .avia-smallarrow-slider-heading {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-body.home #av_section_1 .new-special-heading {
-  display: none;
-}
-
-body.home #av_section_1 .avia-smallarrow-slider .avia-slideshow-arrows {
-  width: 100%;
-}
-
-body.home #av_section_1 .avia-slideshow-arrows a:before {
-  background: transparent;
-  color:#618d33;
-  font-size: 40px;
-  font-weight: 900;
+body.home #av_section_1 .flex_column.av_one_fifth .avia-button-wrap{
+  margin-top:auto;
 }
 
 /************ Section Three ***********/
-body.home .avia_textblock .textlm1 {
+
+/*body.home .avia_textblock .textlm1 {
   color: grey !important;
 }
 
@@ -214,6 +183,10 @@ body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_text
 
 body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
   margin-top: 51px;
+}*/
+
+body.home #home_third .flex_column.av_one_third {
+  height: 261px;
 }
 
 
@@ -270,10 +243,7 @@ Mobile Styles
 
 
 @media only screen and (max-width: 1220px) {
-  .container_wrap .container {
-    padding-left: 0 !important;
-    width: 100% !important;
-  }
+
   #container_wrap>.avia-menu.av-main-nav-wrap {
     display: flex;
   }
