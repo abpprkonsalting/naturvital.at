@@ -69,7 +69,7 @@ wp_head();
 		<div id="container_wrap" class="container_wrap" style="background:#618d33;">
     		<div class="container" style="height: 150px;display: flex;padding-right: 0;max-width: 6000px;">
 		 		<div class="padding-five" style="width: 5%;height: 150px;"></div>
-				<div style="width: 95%;height: 150px;display: flex;">
+				<div style="width: 100%;height: 150px;display: flex;">
 					<div style="width: 283px;height: 170px;padding: 10px;">
 						<div style="height: 95%;background:#618d33;border: 0px solid white;border-radius: 200px;">
 							<?php echo avia_logo(AVIA_BASE_URL.'images/layout/logo.png', $addition, 'strong', true); ?> 
