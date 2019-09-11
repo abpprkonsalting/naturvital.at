@@ -99,6 +99,25 @@ display: flex;
 
 }
 
+.padding-five {
+  display:none;
+}
+
+.cart_dropdown_first .cart_dropdown_link span:first-child {
+  color: white;
+    padding: 10px 15px;
+    line-height: 25px;
+    background: #ee7801;
+    height: 100%;
+}
+
+#container_wrap > .avia-menu .cart_dropdown_first {
+  height: 55%;
+}
+
+#container_wrap > .avia-menu .cart_dropdown_first a {
+line-height: 25px;
+}
 /**************************** Footer *****************************/
 
 #footer .flex_column.av_one_half:first-child {
@@ -247,7 +266,7 @@ Mobile Styles
   #container_wrap>.avia-menu.av-main-nav-wrap {
     display: flex;
   }
-  #container_wrap .main_menu .avia-menu #avia-menu li:not(:last-child){
+  #container_wrap .main_menu .avia-menu #avia-menu li:not(.av-burger-menu-main){
     display: none;
   }
 }
