@@ -12,9 +12,9 @@
 
 
             var headerContainer = jQuery("#search-placeholder");
-                headerContainer.append("<form action=\"/\" id=\"searchform\" method=\"get\" class=\"\" style=\"margin-right: 30%;\">" + 
-                "<div><input style=\"background: transparent;line-height: 28px;color: gray;\" type=\"submit\" value=\"\ue803\" id=\"searchsubmit\" class=\"button avia-font-entypo-fontello\">" +
-                "<input style=\"min-width: 250px;padding: 5px;\" type=\"text\" id=\"s\" name=\"s\" value=\"\" placeholder=\"Search\"></div></form>");
+                headerContainer.append("<form action=\"/\" id=\"searchform\" method=\"get\" class=\"\" style=\"margin-right: 15%;\">" + 
+                "<div><input style=\"background: transparent;height: 30px;line-height:30px;color: gray;\" type=\"submit\" value=\"\ue803\" id=\"searchsubmit\" class=\"button avia-font-entypo-fontello\">" +
+                "<input style=\"min-width: 200px;padding: 5px;\" type=\"text\" id=\"s\" name=\"s\" value=\"\" placeholder=\"Suche...\"></div></form>");
 
             var secondMenuSection = jQuery("#second-menu-placeholder");
             var secondMenu = jQuery("#second-menu-placeholder .avia-menu.av-main-nav-wrap");
@@ -22,14 +22,16 @@
             secondMenuSection.remove();
             wholeWrap.append(secondMenu);
 
-            var originalCartContainer = jQuery('#header_main .menu-item.cart_dropdown');
+            /*var originalCartContainer = jQuery('#header_main .menu-item.cart_dropdown');
             var originalCart = jQuery('#header_main .menu-item.cart_dropdown .cart_dropdown_first');
 
             var menu = jQuery('.avia-menu ul');
-            menu.append(originalCart);
-            originalCartContainer.remove();
+            var burger = jQuery('.av-burger-menu-main.menu-item-avia-special');
+            originalCart.insertBefore(burger);
+            originalCartContainer.remove();*/
 
-            jQuery('#menu-item-search').remove();
+            var bla = jQuery('.menu-item-search-dropdown');
+            bla.remove();
 
         }
     );

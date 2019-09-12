@@ -44,7 +44,10 @@ body {
 }
 
 #header_main .container .main_menu {
-  width: 100%;
+  width: 110%;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
 }
 
 #header_main .container .main_menu li a {
@@ -58,23 +61,25 @@ body {
 }
 
 #menu-item-131 {
-  background:  #618d33;
+  background: #618d33;
 }
 
 #container_wrap>.avia-menu.av-main-nav-wrap {
   display: none;
   background: #618d33;
-  justify-content: center;
+  justify-content: flex-end;
   width: 100%;
-  height:45px;
+  height: 45px;
+  padding-right: 55px;
 }
 
-#container_wrap>.avia-menu.av-main-nav-wrap > ul{
-display: flex;
-    align-items: center;
+#container_wrap>.avia-menu.av-main-nav-wrap>ul {
+  display: flex;
+  align-items: center;
 }
 
-#advanced_menu_toggle, #advanced_menu_hide {
+#advanced_menu_toggle,
+#advanced_menu_hide {
   height: 40px;
   width: 40px;
   line-height: 40px;
@@ -88,60 +93,79 @@ display: flex;
 
 .logo {
   float: none !important;
+  height: auto !important;
+  width: auto !important;
 }
 
 .logo a img {
   margin: 0 !important;
+  max-height: 3000px !important;
 }
-#second-menu-placeholder{
+
+#second-menu-placeholder {
   background: #618d33 !important;
   font-family: 'Roboto Condensed', sans-serif;
 
 }
 
 .padding-five {
-  display:none;
+  display: none;
+}
+
+#menu-item-shop {
+  border: none;
+}
+
+#menu-item-shop .cart_dropdown_link {
+  padding: 0 0 0 10px;
+}
+
+#menu-item-shop .dropdown_widget.dropdown_widget_cart {
+  top: 50px;
 }
 
 .cart_dropdown_first .cart_dropdown_link span:first-child {
   color: white;
-    padding: 10px 15px;
-    line-height: 25px;
-    background: #ee7801;
-    height: 100%;
+  padding: 10px 15px;
+  line-height: 25px;
+  background: #ee7801;
+  height: 100%;
+  font-size: 90%;
 }
 
-#container_wrap > .avia-menu .cart_dropdown_first {
+#container_wrap>.avia-menu .cart_dropdown_first {
   height: 55%;
 }
 
-#container_wrap > .avia-menu .cart_dropdown_first a {
-line-height: 25px;
+#container_wrap>.avia-menu .cart_dropdown_first a {
+  line-height: 25px;
 }
+
 /**************************** Footer *****************************/
 
 #footer .flex_column.av_one_half:first-child {
   display: flex;
-    justify-content: space-between;
-    width:40%;
+  justify-content: space-between;
+  width: 40%;
 }
 
 #footer .flex_column.av_one_half:last-child {
   display: flex;
-    justify-content: space-around;
-    margin: 0;
-    width: 60%;
+  justify-content: space-around;
+  margin: 0;
+  width: 60%;
 }
 
-#footer #media_image-2,#footer #media_image-4 {
-  width:33%;
+#footer #media_image-2,
+#footer #media_image-4 {
+  width: 33%;
 }
 
-#footer #media_image-8{
+#footer #media_image-8 {
   margin-left: 5%;
 }
 
-#footer #media_image-9{
+#footer #media_image-9 {
   margin-right: 5%;
 }
 
@@ -150,7 +174,7 @@ line-height: 25px;
 body.home .avia-button {
   border-radius: 30px;
   background: #75b616;
-    border-color: #75b616 !important;
+  border-color: #75b616 !important;
 }
 
 
@@ -182,27 +206,15 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia
 
 body.home #av_section_1 .flex_column.av_one_fifth {
   min-height: 320px;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-body.home #av_section_1 .flex_column.av_one_fifth .avia-button-wrap{
-  margin-top:auto;
+body.home #av_section_1 .flex_column.av_one_fifth .avia-button-wrap {
+  margin-top: auto;
 }
 
 /************ Section Three ***********/
-
-/*body.home .avia_textblock .textlm1 {
-  color: grey !important;
-}
-
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 7px;
-}
-
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 51px;
-}*/
 
 body.home #home_third .flex_column.av_one_third {
   height: 261px;
@@ -220,33 +232,85 @@ Desktop Styles
 
 }
 
-
-
 /*
 Mobile Styles
 ================================================== */
 /* Note: Add new css to the media query below that you want to only effect the Mobile and Tablet Portrait view */
 
+
+@media only screen and (max-width: 1089px) {
+
+  #container_wrap>.avia-menu.av-main-nav-wrap {
+    display: flex;
+    margin-top: -1px;
+  }
+
+  #container_wrap .main_menu .avia-menu #avia-menu li:not(.av-burger-menu-main) {
+    display: none;
+  }
+
+}
+
+@media only screen and (min-width: 1089px) and (max-width: 1166px) {
+  #header_main .container .main_menu {
+    width: 122%;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1089px) {
+  #menu-item-shop {
+    position: absolute !important;
+    top: 44px !important;
+    right: 10px !important;
+  }
+}
+
+
 @media only screen and (max-width: 768px) {
 
-#container_wrap .main_menu .avia-menu {
-  /*display: none;*/
-  float:right;
-}
-.responsive #top .av-main-nav .menu-item-avia-special {
-  position: absolute;
-  right: 0;
-  top: -17px;
-  z-index: 9999;
+  #container_wrap .main_menu .avia-menu {
+    /*display: none;*/
+    float: right;
+  }
+
+  .responsive #top .av-main-nav .menu-item-avia-special {
+    position: absolute;
+    right: 0;
+    top: -17px;
+    z-index: 9999;
+  }
+
+  .header_color .av-hamburger-inner,
+  .header_color .av-hamburger-inner::before,
+  .header_color .av-hamburger-inner::after {
+    background-color: white;
+  }
+
+  .av-burger-overlay-inner .avia-menu-text {
+    color: #618d33;
+  }
+
+  #menu-item-shop {
+    position: absolute !important;
+    top: 0 !important;
+    /*right: -25px !important;*/
+  }
 }
 
-.header_color .av-hamburger-inner, .header_color .av-hamburger-inner::before, .header_color .av-hamburger-inner::after {
-  background-color: white;
-}
+@media only screen and (width: 768px) {
+  .responsive #top .av-main-nav .menu-item-avia-special {
+    position: absolute;
+    right: 35px;
+    z-index: 9999;
+    display: block;
+    top: unset;
+  }
 
-.av-burger-overlay-inner .avia-menu-text {
-  color: #618d33;
-}
+  #menu-item-shop {
+    position: absolute !important;
+    top: 0 !important;
+    right: 10px !important;
+  }
 }
 
 
@@ -255,30 +319,20 @@ Mobile Styles
   .padding-five {
     display: none !important;
   }
-  .padding-five ~ div{
+
+  .padding-five~div {
     width: 100% !important;
   }
 }
 
 
-@media only screen and (max-width: 1220px) {
-
-  #container_wrap>.avia-menu.av-main-nav-wrap {
-    display: flex;
-  }
-  #container_wrap .main_menu .avia-menu #avia-menu li:not(.av-burger-menu-main){
-    display: none;
-  }
-}
 
 @media only screen and (min-width: 1070px) and (max-width: 1090px) {
 
   #search-placeholder {
     width: 120%;
   }
-  #container_wrap>.avia-menu.av-main-nav-wrap {
-    display: flex;
-  }
+
   #container_wrap .main_menu .avia-menu {
     display: none;
   }
@@ -286,11 +340,33 @@ Mobile Styles
 
 }
 
-@media only screen and (min-width: 826px) and (max-width: 1069px) {
+@media only screen and (min-width: 911px) and (max-width: 1069px) {
 
-  #container_wrap>.avia-menu.av-main-nav-wrap {
-    display: flex;
+
+  #container_wrap .main_menu .avia-menu {
+    display: none;
   }
+
+}
+
+@media only screen and (min-width: 875px) and (max-width: 910px) {
+
+  #container_wrap>.avia-menu.av-main-nav-wrap .menu-item>a {
+    padding: 0 8px;
+  }
+
+  #container_wrap .main_menu .avia-menu {
+    display: none;
+  }
+
+}
+
+@media only screen and (min-width: 826px) and (max-width: 874px) {
+
+  #container_wrap>.avia-menu.av-main-nav-wrap .menu-item>a {
+    padding: 0 5px;
+  }
+
 
   #container_wrap .main_menu .avia-menu {
     display: none;
@@ -308,61 +384,74 @@ Mobile Styles
   }
 
   #searchform {
-    margin-right: 20% !important;
+    margin-right: 2% !important;
   }
 
   .logo {
     margin-left: 9px;
   }
+}
 
-  /*--------Section three----------*/
+@media only screen and (min-width: 769px) and (max-width: 825px) {
 
-  body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
-    margin-top: 0px;
+  #container_wrap .main_menu .avia-menu .av-burger-menu-main.menu-item-avia-special {
+
+    display: block;
+    position: fixed;
+    right: 35px;
+
   }
 
-  body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
-    margin-top: 0px;
+  .header_color .av-hamburger-inner,
+  .header_color .av-hamburger-inner::before,
+  .header_color .av-hamburger-inner::after {
+    background-color: white;
   }
 
-  /*-----------Second section----------*/
-
-  /*#slideimage1{
-  height: 200px !important;
-}*/
-  .slidetext1 {
-    font-size: 16px !important;
+  .av-burger-overlay-inner .avia-menu-text {
+    color: #618d33;
   }
 
-  /*.slidetext2 {
+  #menu-item-shop {
+    position: absolute !important;
+    top: 0 !important;
+    right: 10px !important;
+  }
+}
+
+/*--------Section three----------*/
+
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
+}
+
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
+}
+
+/*-----------Second section----------*/
+
+.slidetext1 {
+  font-size: 16px !important;
+}
+
+.avia-smallarrow-slider-heading.no-content-slider-heading {
   display: none;
-  font-size: 1px !important;
-}*/
-  .avia-smallarrow-slider-heading.no-content-slider-heading {
-    display: none;
-  }
+}
 
-  body.home #av_section_1 .entry-content .content-slider-slide {
-    flex-direction: column;
-  }
+body.home #av_section_1 .entry-content .content-slider-slide {
+  flex-direction: column;
+}
 
-  /*#av_section_1 {
-height: 350px;
+.flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
+  display: none !important;
+}
 
-}*/
-  .flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
-    display: none !important;
-  }
-
-  /**************************** Third Section *****************************/
+/**************************** Third Section *****************************/
 
 
-  #after_section_1 .flex_column.av_one_third {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-
-  
+#after_section_1 .flex_column.av_one_third {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
