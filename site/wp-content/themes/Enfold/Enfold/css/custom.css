@@ -208,6 +208,14 @@ body.home #av_section_1 .flex_column.av_one_fifth {
   min-height: 320px;
   display: flex;
   flex-direction: column;
+  background: #fff;
+    padding: 10px;
+    margin-left: 1.25%;
+    width: 19%;
+}
+
+body.home #av_section_1 .flex_column.av_one_fifth:first-child {
+  margin-left:0;
 }
 
 body.home #av_section_1 .flex_column.av_one_fifth .avia-button-wrap {
