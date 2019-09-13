@@ -33,6 +33,14 @@
             var bla = jQuery('.menu-item-search-dropdown');
             bla.remove();
 
+
+            var cpw = jQuery('#categories_presentation_wrapper .container .content');
+            if (cpw.length > 0){
+                cpw.children().remove();
+                var presentation = jQuery('#categories_presentation');
+                cpw.append(presentation);
+            }
+
         }
     );
 
