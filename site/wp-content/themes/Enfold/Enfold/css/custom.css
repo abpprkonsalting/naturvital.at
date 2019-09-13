@@ -15,7 +15,11 @@ body {
 
 }
 
-/*********************Header*********************************/
+.avia-layerslider {
+  border:none !important;
+}
+
+/*********************  Header  *********************************/
 #avia-menu.menu.av-main-nav li .avia-bullet {
   display: none;
 }
@@ -228,24 +232,133 @@ body.home #home_third .flex_column.av_one_third {
   height: 261px;
 }
 
+/*--------Section three----------*/
 
-/*
-Desktop Styles
-================================================== */
-/* Note: Add new css to the media query below that you want to only effect the desktop view of your site */
-
-@media only screen and (min-width: 768px) {
-  /* Add your Desktop Styles here */
-
-
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
 }
 
-/*
+body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
+  margin-top: 0px;
+}
+
+/*-----------Second section----------*/
+
+.slidetext1 {
+  font-size: 16px !important;
+}
+
+.avia-smallarrow-slider-heading.no-content-slider-heading {
+  display: none;
+}
+
+body.home #av_section_1 .entry-content .content-slider-slide {
+  flex-direction: column;
+}
+
+.flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
+  display: none !important;
+}
+
+/**************************** Third Section *****************************/
+
+
+#after_section_1 .flex_column.av_one_third {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+/**************************** SHOP PAGE *****************************/
+
+
+body.page-id-127 .product-sorting {
+  display:none;
+}
+
+
+.product {
+  
+  background: #fff;
+  padding: 10px !important;
+}
+
+.inner_product {
+  border:none;
+  background: transparent;
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+}
+
+.product .inner_product .inner_product_header {
+  background: transparent;
+  border: none !important;
+}
+
+.product .inner_product .inner_product_header .avia-arrow {
+  display:none;
+}
+
+.product .inner_product .inner_product_header .inner_product_header_cell {
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product .inner_product .inner_product_header .woocommerce-loop-product__title {
+  text-transform: none;
+    text-align: center;
+}
+
+.product .inner_product .inner_product_header .price {
+  margin-top: 20px;
+}
+
+.product .inner_product .inner_product_header .price * {
+    color: black !important;
+    font-size: 24px !important;
+}
+
+.product .inner_product .avia_cart_buttons {
+  background: transparent;
+    opacity: 1;
+    display: flex;
+    border: none;
+    margin-top: auto;
+}
+
+.product .inner_product .avia_cart_buttons .add_to_cart_button{
+  border-radius: 30px !important;
+    background: #75b616 !important;
+    border-color: #75b616 !important;
+    width: auto !important;
+    padding: 10px 15px !important;
+    color: white !important;
+    display: flex !important;
+    flex-direction: row-reverse !important;
+}
+
+.product .inner_product .avia_cart_buttons .add_to_cart_button > span{
+
+  margin-left: 10px;
+}
+
+.product .inner_product .avia_cart_buttons .show_details_button,.product .inner_product .avia_cart_buttons .button-mini-delimiter {
+  display:none;
+}
+
+/****************************************************************
+/****************************************************************
+/****************************************************************
+/****************************************************************
 Mobile Styles
 ================================================== */
 /* Note: Add new css to the media query below that you want to only effect the Mobile and Tablet Portrait view */
 
 
+/*********************** HEADER *********************************/
 @media only screen and (max-width: 1089px) {
 
   #container_wrap>.avia-menu.av-main-nav-wrap {
@@ -332,8 +445,6 @@ Mobile Styles
     width: 100% !important;
   }
 }
-
-
 
 @media only screen and (min-width: 1070px) and (max-width: 1090px) {
 
@@ -427,39 +538,4 @@ Mobile Styles
   }
 }
 
-/*--------Section three----------*/
-
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-17.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 0px;
-}
-
-body.home .avia-button-wrap.avia-button-left.avia-builder-el-13.el_after_av_textblock.avia-builder-el-last {
-  margin-top: 0px;
-}
-
-/*-----------Second section----------*/
-
-.slidetext1 {
-  font-size: 16px !important;
-}
-
-.avia-smallarrow-slider-heading.no-content-slider-heading {
-  display: none;
-}
-
-body.home #av_section_1 .entry-content .content-slider-slide {
-  flex-direction: column;
-}
-
-.flex_cell.no_margin.av_one_fourth.avia-builder-el-7.el_after_av_cell_one_half.avia-builder-el-last {
-  display: none !important;
-}
-
-/**************************** Third Section *****************************/
-
-
-#after_section_1 .flex_column.av_one_third {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+/*********************** END HEADER *********************************/
