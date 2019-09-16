@@ -1,9 +1,9 @@
 /* Have fun adding your style here :) - PS: At all times this file should contain a comment or a rule, otherwise opera might act buggy :( */
 
 /* General Custom CSS */
-body {
+/*body {
   font-family: 'Roboto Condensed', sans-serif !important;
-}
+}*/
 
 .all_colors {
   padding-top: 0px;
@@ -209,7 +209,7 @@ body.home #av-layout-grid-1 .flex_cell_inner .avia-button-wrap:first-child .avia
 /************ Second Section ***********/
 
 body.home #av_section_1 .flex_column.av_one_fifth {
-  min-height: 320px;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
   background: #fff;
