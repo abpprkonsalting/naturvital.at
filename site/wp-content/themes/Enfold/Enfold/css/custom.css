@@ -365,6 +365,38 @@ body.page-id-127 .product-sorting {
   padding-bottom:300px;
 }
 
+/********************************* Products Pages **********************************************/
+
+body.product-template-default #main .container_wrap {
+  padding-bottom: 50px;
+}
+
+body.product-template-default #av_section_1 {
+  display:none;
+}
+
+body.product-template-default .product_title {
+  margin: 30px 0;
+}
+
+body.product-template-default .price {
+  display: inline-block;
+}
+
+body.product-template-default .woocommerce-Price-amount, body.product-template-default .woocommerce-Price-currencySymbol {
+  font-size: 26px;
+}
+
+body.product-template-default .woocommerce-product-details__short-description {
+  margin: 20px 0;
+}
+
+body.product-template-default .single_add_to_cart_button {
+  border-radius: 30px;
+    background: #75b616;
+    border-color: #75b616 !important;
+}
+
 /****************************************************************
 /****************************************************************
 /****************************************************************
