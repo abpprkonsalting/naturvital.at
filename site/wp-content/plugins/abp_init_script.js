@@ -52,6 +52,12 @@
                 prod_cart.prepend(price);
 
             }
+
+            if ( jQuery('body').hasClass("page-id-499")) {
+                var container = jQuery('#categories_presentation');
+                var text_block = jQuery('#categories_presentation > .flex_cell.av_two_fifth .avia_textblock');
+                container.append(text_block);
+            }
             
 
         }

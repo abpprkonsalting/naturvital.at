@@ -474,6 +474,31 @@ body.product-template-default #main .product .single-product-main-image .woocomm
     float: right;
 }
 
+/********************************* Bio-Qualitat Page **********************************************/
+
+body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full,
+body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container,
+body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container .avia-image-container-inner, img {
+
+  width: 100%;
+
+}
+
+body.page-id-499 #categories_presentation {
+display: flex;
+    flex-wrap: wrap;
+}
+
+body.page-id-499 #categories_presentation > .avia_textblock  {
+  width:100%;
+  display: flex;
+}
+
+body.page-id-499 #categories_presentation > .avia_textblock p {
+  width: 80%;
+    margin: 50px auto;
+}
+
 /****************************************************************
 /****************************************************************
 /****************************************************************
