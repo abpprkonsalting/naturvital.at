@@ -30,8 +30,7 @@
             originalCart.insertBefore(burger);
             originalCartContainer.remove();*/
 
-            var bla = jQuery('.menu-item-search-dropdown');
-            bla.remove();
+            jQuery('.menu-item-search-dropdown').remove();
 
 
             var cpw = jQuery('#categories_presentation_wrapper .container .content');
@@ -40,6 +39,20 @@
                 var presentation = jQuery('#categories_presentation');
                 cpw.append(presentation);
             }
+
+            if ( jQuery('body').hasClass("product-template-default")) {
+
+                var prod_sumary = jQuery('.product .summary.entry-summary');
+                var prod_details = jQuery('.woocommerce-product-details__short-description');
+                var prod_cart = jQuery('.product .cart');
+                prod_cart.after(prod_details);
+                var prod_meta = jQuery('.product .product_meta');
+                prod_meta.remove();
+                var price = jQuery('.product p.price');
+                prod_cart.prepend(price);
+
+            }
+            
 
         }
     );

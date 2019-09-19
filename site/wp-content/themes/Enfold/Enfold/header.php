@@ -78,15 +78,12 @@ wp_head();
 					<div style="flex: 1;display:flex;flex-direction:column;height: 150px;">
 						<div style="height: 45%;"></div>
 						<div id="search-placeholder" style="height: 25%;margin-left: -130px;;background: white;display: flex;justify-content: flex-end;align-items: center;"></div>
-						<div style="height: 30%;display: flex;align-items: center;justify-content: flex-end;padding-right: 100px;position: relative;">
+						<div style="height: 30%;display: flex;align-items: center;justify-content: flex-end;position: absolute;left:0;bottom:0;width:100%;">
 							<?php get_template_part( 'includes/helper', 'main-menu' ); ?>
 						</div>
 					</div>
 				</div>
 			 </div>
-			<div id="second-menu-placeholder" >				
-				<?php get_template_part( 'includes/helper', 'main-menu' ); ?>
-			</div>
 		</div>
 	<?php } ?>
 		
