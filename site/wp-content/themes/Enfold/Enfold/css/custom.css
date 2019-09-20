@@ -478,7 +478,8 @@ body.product-template-default #main .product .single-product-main-image .woocomm
 
 body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full,
 body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container,
-body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container .avia-image-container-inner, img {
+body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container .avia-image-container-inner,
+body.page-id-499 #categories_presentation > .flex_cell.av_two_fifth .flex_column.av_one_full .avia-image-container .avia-image-container-inner img {
 
   width: 100%;
 
